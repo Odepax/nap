@@ -1,0 +1,71 @@
+Core <--- core lib with json/yaml/obo readers & asp generator, split/extract/ later
+Cli
+PowerShell <--- later
+SampleApi -- ? || put the json input in tests
+SampleApi.Tests <-------,
+PrototypingApi           >--- Why 2? As if the tests were gonna be different. Or will they indeed be?
+PrototypingApi.Tests <--'
+
+{
+	"$schema": "https://github.com/Odepax/nap/wiki/schema/flexible-json-0.1.json",
+	"cat": {
+		"name": "string",
+		"purr power": { "type": "float", "in": [ 0.0, 1.0 ] },
+		"is grumpy": ["bool"],
+		"slaves": ["list", ["hooman"]],
+		"preys": { "list of": "hooman" }
+	},
+	"bird": {
+		"name": { "type": "string" },
+		"species": { "type": "string" },
+		"can fly": { "type": "bool }"
+	}
+}
+
+----------------------------------------------------------------
+
+META
+
+service {
+	name : string
+	resources : list of resource
+}
+
+resource {
+	name : string
+	fields : list of resource field
+}
+
+resource field {
+	name : string
+	type : string
+}
+
+----------------------------------------------------------------
+
+Obganism equivalent:
+
+"COMPACT" YAML:
+- type: [ cat ]
+  properties:
+    - [ name, [ string ], [ in, 1, 30 ] ]
+    - [ friends, [ list, [ cat ] ], [ not any optional ], [ not any self ] ]
+
+YAML:
+- type:
+    name: cat
+  properties:
+    - name: name
+      type:
+        name: string
+      modifiers:
+        - name: in
+          parameters: [ 1, 30 ]
+    - name: friends
+      type:
+        name: list
+        generics:
+          - name: cat
+      modifiers:
+        - name: not any optional
+        - name: not any self
