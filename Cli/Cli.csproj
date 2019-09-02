@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<LangVersion>8.0</LangVersion>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+
+	<PropertyGroup>
+		<AssemblyName>Nap.Cli</AssemblyName>
+		<RootNamespace>Nap.Cli</RootNamespace>
+	</PropertyGroup>
+
+</Project>
