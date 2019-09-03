@@ -1,10 +1,13 @@
 Core <--- core lib with json/yaml/obo readers & asp generator, split-extract later
 Cli
+Cli.Tests
 PowerShell <--- later
-SampleApi -- ? || put the json input in tests
-SampleApi.Tests <-------,
-PrototypingApi           >--- Why 2? As if the tests were gonna be different. Or will they indeed be?
-PrototypingApi.Tests <--'
+Framework.Api <--- (nuget) refactoring
+Framework.Testing <--- (nuget) refactoring
+SampleApi <--- removed :: put the json input in tests (single-click!)
+SampleApi.Tests <--------,
+PrototypingApi            >--- Why 2? As if the tests were gonna be different. Or will they indeed be?
+PrototypingApi.Tests <---'
 
 ----------------------------------------------------------------
 
