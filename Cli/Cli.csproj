@@ -7,10 +7,13 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
-
 	<PropertyGroup>
 		<AssemblyName>Nap.Cli</AssemblyName>
 		<RootNamespace>Nap.Cli</RootNamespace>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.CodeDom" Version="4.6.0-preview8.19405.3" />
+	</ItemGroup>
 
 </Project>

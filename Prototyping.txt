@@ -1,10 +1,45 @@
-Core <--- core lib with json/yaml/obo readers & asp generator, split/extract/ later
+Core <--- core lib with json/yaml/obo readers & asp generator, split-extract later
 Cli
 PowerShell <--- later
 SampleApi -- ? || put the json input in tests
 SampleApi.Tests <-------,
 PrototypingApi           >--- Why 2? As if the tests were gonna be different. Or will they indeed be?
 PrototypingApi.Tests <--'
+
+----------------------------------------------------------------
+
+FOR NOW, CLI HAS:
+
+- nap poco definitions
+- json > nap poco reader
+- nap poco > asp writer
+	- asp poco definitions
+	- nap poco > asp poco converter
+	- asp poco writer
+- cl-interface
+
+Nap.Cli
+	Definitions
+		Service.cs
+		Resource.cs
+		Field.cs
+		...
+	Json
+		InputFileReader.cs
+		InputReader.cs
+	Asp
+		Definitions
+			DataStructureConvertionExtensions.cs
+			TypeInfo.cs
+		Generation
+			ApiBuilder.cs
+	Interface
+		HelpCommand.cs
+		BuildCommand.cs
+		VersionCommand.cs
+	Program.cs
+
+----------------------------------------------------------------
 
 {
 	"$schema": "https://github.com/Odepax/nap/wiki/schema/flexible-json-0.1.json",
