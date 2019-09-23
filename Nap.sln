@@ -21,9 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleApi.Tests", "SampleAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cli.Tests", "Cli.Tests\Cli.Tests.csproj", "{5C5661F7-571E-4FAA-873F-990B6EB6E874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Testing", "Framework.Testing\Framework.Testing.csproj", "{01EB11D0-5420-4257-96F7-F18D6BD44658}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework.Testing", "Framework.Testing\Framework.Testing.csproj", "{01EB11D0-5420-4257-96F7-F18D6BD44658}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework.Api", "Framework.Api\Framework.Api.csproj", "{6E8FAEBD-24C9-46E2-8327-C4AA098331A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Framework.Api", "Framework.Api\Framework.Api.csproj", "{6E8FAEBD-24C9-46E2-8327-C4AA098331A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

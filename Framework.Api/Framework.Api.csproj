@@ -1,14 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>netstandard2.1</TargetFramework>
+		<TargetFramework>netcoreapp3.0</TargetFramework>
 		<LangVersion>8.0</LangVersion>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<AssemblyName>Nap.Frameword.Api</AssemblyName>
-		<RootNamespace>Nap.Frameword.Api</RootNamespace>
+		<AssemblyName>Nap.Framework.Api</AssemblyName>
+		<RootNamespace>Nap.Framework.Api</RootNamespace>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0-rc1.19456.14" />
+	</ItemGroup>
 
 </Project>
