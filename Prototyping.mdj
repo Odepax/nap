@@ -562,7 +562,7 @@
 											"top": 92,
 											"width": 142.79989624023438,
 											"height": 14,
-											"text": "«Standard, NuGet»"
+											"text": "«Core, NuGet»"
 										},
 										{
 											"_type": "LabelView",
@@ -689,7 +689,7 @@
 											"top": 492,
 											"width": 142.79989624023438,
 											"height": 14,
-											"text": "«Standard, NuGet»"
+											"text": "«Core, NuGet»"
 										},
 										{
 											"_type": "LabelView",
@@ -1948,7 +1948,7 @@
 											"fontColor": "#191423",
 											"font": "Source Code Pro;14;0",
 											"showShadow": false,
-											"left": 389,
+											"left": 397,
 											"top": 212,
 											"width": 92.39993286132812,
 											"height": 14,
@@ -1964,7 +1964,7 @@
 											"fontColor": "#191423",
 											"font": "Source Code Pro;14;1",
 											"showShadow": false,
-											"left": 389,
+											"left": 397,
 											"top": 228,
 											"width": 92.39993286132812,
 											"height": 14,
@@ -1981,7 +1981,7 @@
 											"fontColor": "#191423",
 											"font": "Source Code Pro;14;0",
 											"showShadow": false,
-											"left": 480,
+											"left": 496,
 											"top": 176,
 											"width": 117.59991455078125,
 											"height": 14,
@@ -1998,7 +1998,7 @@
 											"fontColor": "#191423",
 											"font": "Source Code Pro;14;0",
 											"showShadow": false,
-											"left": 480,
+											"left": 496,
 											"top": 176,
 											"height": 14,
 											"horizontalAlignment": 1
@@ -2008,7 +2008,7 @@
 									"fontColor": "#191423",
 									"font": "Source Code Pro;14;0",
 									"showShadow": false,
-									"left": 384,
+									"left": 392,
 									"top": 207,
 									"width": 102.39993286132812,
 									"height": 40,
@@ -2031,7 +2031,7 @@
 							"font": "Source Code Pro;14;0",
 							"showShadow": false,
 							"containerChangeable": true,
-							"left": 384,
+							"left": 392,
 							"top": 192,
 							"width": 102.39993286132812,
 							"height": 55,
@@ -2057,7 +2057,7 @@
 								"$ref": "AAAAAAFs9rE4oIRIeGI="
 							},
 							"lineStyle": 1,
-							"points": "335:303;401:247"
+							"points": "335:303;406:247"
 						},
 						{
 							"_type": "UMLDependencyView",
@@ -2083,7 +2083,7 @@
 									"fontColor": "#191423",
 									"font": "Source Code Pro;14;0",
 									"showShadow": false,
-									"left": 403,
+									"left": 407,
 									"top": 303,
 									"width": 75.59994506835938,
 									"height": 14,
@@ -2109,7 +2109,7 @@
 									"fontColor": "#191423",
 									"font": "Source Code Pro;14;0",
 									"showShadow": false,
-									"left": 391,
+									"left": 395,
 									"top": 287,
 									"width": 92.39993286132812,
 									"height": 14,
@@ -2136,8 +2136,8 @@
 									"fontColor": "#191423",
 									"font": "Source Code Pro;14;0",
 									"showShadow": false,
-									"left": 449,
-									"top": 295,
+									"left": 453,
+									"top": 296,
 									"height": 14,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -2159,7 +2159,7 @@
 								"$ref": "AAAAAAFs9qoOzIKsOqo="
 							},
 							"lineStyle": 1,
-							"points": "436:359;434:247",
+							"points": "437:359;441:247",
 							"nameLabel": {
 								"$ref": "AAAAAAFs9rR4uISglqc="
 							},
@@ -2195,7 +2195,7 @@
 									"fontColor": "#191423",
 									"font": "Source Code Pro;14;0",
 									"showShadow": false,
-									"left": 470,
+									"left": 474,
 									"top": 142,
 									"height": 14,
 									"alpha": 1.5707963267948966,
@@ -2220,7 +2220,7 @@
 									"fontColor": "#191423",
 									"font": "Source Code Pro;14;0",
 									"showShadow": false,
-									"left": 458,
+									"left": 462,
 									"top": 133,
 									"height": 14,
 									"alpha": 1.5707963267948966,
@@ -2245,7 +2245,7 @@
 									"fontColor": "#191423",
 									"font": "Source Code Pro;14;0",
 									"showShadow": false,
-									"left": 493,
+									"left": 497,
 									"top": 161,
 									"height": 14,
 									"alpha": -1.5707963267948966,
@@ -2268,7 +2268,7 @@
 								"$ref": "AAAAAAFs9rOAUIR6CAI="
 							},
 							"lineStyle": 1,
-							"points": "457:191;508:127",
+							"points": "463:191;510:127",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAFs9rUhMIS7uHE="
@@ -2443,7 +2443,7 @@
 						"$ref": "AAAAAAFs9qjA9IIFHaQ="
 					},
 					"name": "Framework.Api",
-					"stereotype": "Standard, NuGet"
+					"stereotype": "Core, NuGet"
 				},
 				{
 					"_type": "UMLPackage",
@@ -2467,7 +2467,7 @@
 							}
 						}
 					],
-					"stereotype": "Standard, NuGet"
+					"stereotype": "Core, NuGet"
 				},
 				{
 					"_type": "UMLPackage",
