@@ -4,23 +4,21 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-// TODO: Move to the Nap.Framework.Api project.
-
 namespace Nap.Framework.Api
 {
 	[ApiController]
-	public abstract class ApiController<T> : ControllerBase where T : ApiEntity
+	public abstract class CrudController<T> : ControllerBase where T : ApiEntity
 	{
 		private readonly DbContext Context;
 
-		public ApiController(DbContext context) =>
+		public CrudController(DbContext context) =>
 			Context = context;
 
 		[HttpGet]
 		public async Task<ActionResult<IEnumerable<T>>> Get() =>
 			Ok(await Context.Set<T>().AsNoTracking().ToListAsync());
 
-		[HttpGet("{id}")]
+		[HttpGet("{id:guid}")]
 		public async Task<ActionResult<T>> Get(Guid id)
 		{
 			T entity = await Context.Set<T>().FindAsync(id);
@@ -42,11 +40,12 @@ namespace Nap.Framework.Api
 			return CreatedAtAction(nameof(Get), new { id = entity.Id.ToString() }, entity.Id.ToString());
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut("{id:guid}")]
 		public async Task<IActionResult> Set(Guid id, T entity)
 		{
 			entity.Id = id;
 
+			// TODO: Change to ContainsAsync?
 			if (await Context.Set<T>().AnyAsync(e => e.Id == id))
 			{
 				Context.Set<T>().Update(entity);
@@ -61,7 +60,7 @@ namespace Nap.Framework.Api
 			return NoContent();
 		}
 
-		[HttpDelete("{id}")]
+		[HttpDelete("{id:guid}")]
 		public async Task<ActionResult<T>> Remove(Guid id)
 		{
 			T entity = await Context.Set<T>().FindAsync(id);
