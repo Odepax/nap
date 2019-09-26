@@ -2,52 +2,40 @@
 using Nap.Framework.Testing;
 using NUnit.Framework;
 using static System.Net.HttpStatusCode;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Nap.PrototypingApi.Tests.Cat
 {
 	[TestFixture]
-	[SingleThreaded]
-	public class CrudScenario
+	[Parallelizable(ParallelScope.Children)]
+	public static class CrudScenario
 	{
-		private static Api.ServerEndpoints Endpoints => Api.Endpoints;
-
-		private static Guid CreatedId = Guid.Empty;
-		private static readonly Guid SetId = new Guid(200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-
 		[Test]
-		public void Step_00_00_R()
+		[NonParallelizable]
+		public static void Step_00_00_Ra()
 		{
-			Endpoints.Cat
+			Api.Endpoints.Cat
 				.Get()
 				.AssertResponse(
-					HttpResponseTests.StatusCode(OK),
-					HttpResponseTests.ContentType(Application.Json),
-					HttpResponseTests.JsonContent(new object[0])
+					HttpResponseTests.JsonResult(new object[0])
 				);
 		}
 
 		[Test]
-		public void Step_01_00_C()
+		public static void Step_01_00_CR_D()
 		{
-			Endpoints.Cat
+			Guid created = Guid.Empty;
+
+			Api.Endpoints.Cat
 				.Post(new
 				{
 					name = "Felix",
 					purrPower = 8
 				})
 				.AssertResponse(
-					HttpResponseTests.CreatedWithId(Endpoints.Cat.Url + "/{0}", id => CreatedId = id)
+					HttpResponseTests.CreatedWithId(Api.Endpoints.Cat.Url + "/{0}", id => created = id)
 				);
 
-			Assert.AreNotEqual(Guid.Empty, CreatedId);
-		}
-
-		[Test]
-		public void Step_02_00_R()
-		{
-			Endpoints.Cat
-				.Select(CreatedId.ToString())
+			Api.Endpoints.Cat.Select(created.ToString())
 				.Get()
 				.AssertResponse(
 					HttpResponseTests.JsonResult(new
@@ -55,16 +43,33 @@ namespace Nap.PrototypingApi.Tests.Cat
 						name = "Felix",
 						purrPower = 8,
 						isGrumpy = false,
-						id = CreatedId.ToString()
+						id = created.ToString()
 					})
+				);
+
+			Api.Endpoints.Cat.Select(created.ToString())
+				.Delete()
+				.AssertResponse(
+					HttpResponseTests.StatusCode(NoContent)
 				);
 		}
 
 		[Test]
-		public void Step_03_00_U()
+		public static void Step_02_00_C_UR_D()
 		{
-			Endpoints.Cat
-				.Select(CreatedId.ToString())
+			Guid created = Guid.Empty;
+
+			Api.Endpoints.Cat
+				.Post(new
+				{
+					name = "Felix",
+					purrPower = 8
+				})
+				.AssertResponse(
+					HttpResponseTests.CreatedWithId(Api.Endpoints.Cat.Url + "/{0}", id => created = id)
+				);
+
+			Api.Endpoints.Cat.Select(created.ToString())
 				.Put(new
 				{
 					name = "Felix",
@@ -74,13 +79,8 @@ namespace Nap.PrototypingApi.Tests.Cat
 				.AssertResponse(
 					HttpResponseTests.StatusCode(NoContent)
 				);
-		}
 
-		[Test]
-		public void Step_04_00_R()
-		{
-			Endpoints.Cat
-				.Select(CreatedId.ToString())
+			Api.Endpoints.Cat.Select(created.ToString())
 				.Get()
 				.AssertResponse(
 					HttpResponseTests.JsonResult(new
@@ -88,16 +88,11 @@ namespace Nap.PrototypingApi.Tests.Cat
 						name = "Felix",
 						purrPower = 2,
 						isGrumpy = true,
-						id = CreatedId.ToString()
+						id = created.ToString()
 					})
 				);
-		}
 
-		[Test]
-		public void Step_05_00_D()
-		{
-			Endpoints.Cat
-				.Select(CreatedId.ToString())
+			Api.Endpoints.Cat.Select(created.ToString())
 				.Delete()
 				.AssertResponse(
 					HttpResponseTests.StatusCode(NoContent)
@@ -105,10 +100,11 @@ namespace Nap.PrototypingApi.Tests.Cat
 		}
 
 		[Test]
-		public void Step_06_00_C2()
+		public static void Step_03_00_UcR_D()
 		{
-			Endpoints.Cat
-				.Select(SetId.ToString())
+			Guid target = new Guid(200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+			Api.Endpoints.Cat.Select(target.ToString())
 				.Put(new
 				{
 					name = "Garfield",
@@ -118,13 +114,8 @@ namespace Nap.PrototypingApi.Tests.Cat
 				.AssertResponse(
 					HttpResponseTests.StatusCode(NoContent)
 				);
-		}
 
-		[Test]
-		public void Step_07_00_R2()
-		{
-			Endpoints.Cat
-				.Select(SetId.ToString())
+			Api.Endpoints.Cat.Select(target.ToString())
 				.Get()
 				.AssertResponse(
 					HttpResponseTests.JsonResult(new
@@ -132,31 +123,14 @@ namespace Nap.PrototypingApi.Tests.Cat
 						name = "Garfield",
 						purrPower = 1,
 						isGrumpy = false,
-						id = SetId.ToString()
+						id = target.ToString()
 					})
 				);
-		}
 
-		[Test]
-		public void Step_08_00_D2()
-		{
-			Endpoints.Cat
-				.Select(SetId.ToString())
+			Api.Endpoints.Cat.Select(target.ToString())
 				.Delete()
 				.AssertResponse(
 					HttpResponseTests.StatusCode(NoContent)
-				);
-		}
-
-		[Test]
-		public void Step_0X_00_R()
-		{
-			Endpoints.Cat
-				.Get()
-				.AssertResponse(
-					HttpResponseTests.StatusCode(OK),
-					HttpResponseTests.ContentType(Application.Json),
-					HttpResponseTests.JsonContent(new object[0])
 				);
 		}
 	}

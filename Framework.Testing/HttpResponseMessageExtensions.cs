@@ -10,31 +10,13 @@ namespace Nap.Framework.Testing
 		{
 			HttpResponseTestResult overallResult = HttpResponseTests.Group(tests).Invoke(@this);
 
-			switch (overallResult.Status)
+			if (overallResult.Failed)
 			{
-				case HttpResponseTestResultStatus.Passed:
-					Assert.Pass(string.Join("\n", overallResult.Remarks
-						.Prepend("[PASS] Assertion on HTTP response passed. t(-.-t)")
-						.Append(@this.ToString())
-						.Append(@this.Content.ReadAsStringAsync().GetAwaiter().GetResult())
-					));
-					break;
-
-				case HttpResponseTestResultStatus.PassedWithWarnings:
-					Assert.Warn(string.Join("\n", overallResult.Remarks
-						.Prepend("[WARN] Assertion on HTTP response passed with warnings. (9*O*)9")
-						.Append(@this.ToString())
-						.Append(@this.Content.ReadAsStringAsync().GetAwaiter().GetResult())
-					));
-					break;
-
-				default:
-					Assert.Fail(string.Join("\n", overallResult.Remarks
-						.Prepend("[FAIL] Assertion on HTTP response failed. c(TnTu)")
-						.Append(@this.ToString())
-						.Append(@this.Content.ReadAsStringAsync().GetAwaiter().GetResult())
-					));
-					break;
+				Assert.Fail(string.Join("\n", overallResult.Remarks
+					.Prepend("[FAIL] Assertion on HTTP response failed. c(TnTu)")
+					.Append(@this.ToString())
+					.Append(@this.Content.ReadAsStringAsync().GetAwaiter().GetResult())
+				));
 			}
 		}
 	}

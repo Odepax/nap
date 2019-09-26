@@ -65,6 +65,10 @@ namespace Nap.Framework.Testing
 					{
 						return HttpResponseTestResult.Fail("Content is not a valid id.");
 					}
+					else if(id == Guid.Empty)
+					{
+						return HttpResponseTestResult.Fail("Content is a 'zero' id.");
+					}
 					else if (response.Headers.Location.ToString().Equals(string.Format(uriFormat, id.ToString())))
 					{
 						callback?.Invoke(id);
@@ -78,7 +82,7 @@ namespace Nap.Framework.Testing
 				}
 			);
 
-		public static HttpResponseTest Group(params HttpResponseTest[] tests) =>
+		internal static HttpResponseTest Group(params HttpResponseTest[] tests) =>
 			response =>
 			{
 				HttpResponseTestResult overallResult = HttpResponseTestResult.Pass();
@@ -87,12 +91,7 @@ namespace Nap.Framework.Testing
 				{
 					HttpResponseTestResult result = test.Invoke(response);
 
-					overallResult.Status = (
-						  result.Status == HttpResponseTestResultStatus.Failed ? HttpResponseTestResultStatus.Failed
-						: result.Status == HttpResponseTestResultStatus.PassedWithWarnings && overallResult.Passed ? HttpResponseTestResultStatus.PassedWithWarnings
-						: overallResult.Status
-					);
-
+					overallResult.Passed = overallResult.Passed && result.Passed;
 					overallResult.Remarks.AddRange(result.Remarks);
 				}
 
