@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Nap.Framework.Testing
 {
@@ -19,19 +21,20 @@ namespace Nap.Framework.Testing
 		public ApiServerEndpoint Select(string path) =>
 			new ApiServerEndpoint(Url.AbsoluteUri.TrimEnd('/') + '/' + path.TrimStart('/'), Http);
 
-		private HttpResponseMessage Send(HttpRequestMessage request) =>
-			Http.SendAsync(request, CancellationToken.None).GetAwaiter().GetResult();
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private Task<HttpResponseMessage> Send(HttpRequestMessage request) =>
+			Http.SendAsync(request, CancellationToken.None);
 
-		public HttpResponseMessage Get() =>
+		public Task<HttpResponseMessage> Get() =>
 			Send(new HttpRequestMessage(HttpMethod.Get, Url));
 
-		public HttpResponseMessage Post(object json) =>
+		public Task<HttpResponseMessage> Post(object json) =>
 			Send(new HttpRequestMessage(HttpMethod.Post, Url) { Content = new JsonContent(json) });
 
-		public HttpResponseMessage Put(object json) =>
+		public Task<HttpResponseMessage> Put(object json) =>
 			Send(new HttpRequestMessage(HttpMethod.Put, Url) { Content = new JsonContent(json) });
 
-		public HttpResponseMessage Delete() =>
+		public Task<HttpResponseMessage> Delete() =>
 			Send(new HttpRequestMessage(HttpMethod.Delete, Url));
 	}
 }

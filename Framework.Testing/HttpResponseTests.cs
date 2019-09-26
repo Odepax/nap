@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading.Tasks;
 using static System.Net.HttpStatusCode;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -26,7 +28,7 @@ namespace Nap.Framework.Testing
 		public static HttpResponseTest TextContent(string text) =>
 			Factory(
 				"Text content",
-				response => response.Content.ReadAsStringAsync().GetAwaiter().GetResult().Equals(text),
+				async response => (await response.Content.ReadAsStringAsync()).Equals(text),
 				text
 			);
 
@@ -43,7 +45,7 @@ namespace Nap.Framework.Testing
 
 			return Factory(
 				"Json content",
-				response => response.Content.ReadAsStringAsync().GetAwaiter().GetResult().Equals(expectedJson),
+				async response => (await response.Content.ReadAsStringAsync()).Equals(expectedJson),
 				expectedJson
 			);
 		}
@@ -59,9 +61,9 @@ namespace Nap.Framework.Testing
 			Group(
 				ContentType(Text.Plain),
 				StatusCode(Created),
-				response =>
+				async response =>
 				{
-					if (!Guid.TryParse(response.Content.ReadAsStringAsync().GetAwaiter().GetResult(), out Guid id))
+					if (!Guid.TryParse(await response.Content.ReadAsStringAsync(), out Guid id))
 					{
 						return HttpResponseTestResult.Fail("Content is not a valid id.");
 					}
@@ -83,14 +85,12 @@ namespace Nap.Framework.Testing
 			);
 
 		internal static HttpResponseTest Group(params HttpResponseTest[] tests) =>
-			response =>
+			async response =>
 			{
 				HttpResponseTestResult overallResult = HttpResponseTestResult.Pass();
 
-				foreach (HttpResponseTest test in tests)
+				foreach (HttpResponseTestResult result in await Task.WhenAll(tests.Select(test => test.Invoke(response))))
 				{
-					HttpResponseTestResult result = test.Invoke(response);
-
 					overallResult.Passed = overallResult.Passed && result.Passed;
 					overallResult.Remarks.AddRange(result.Remarks);
 				}
@@ -99,8 +99,17 @@ namespace Nap.Framework.Testing
 			};
 
 		private static HttpResponseTest Factory(string subject, Predicate<HttpResponseMessage> predicate, object expectedValue) =>
-			response => predicate(response)
-				? HttpResponseTestResult.Pass()
-				: HttpResponseTestResult.Fail($"{ subject } is not { expectedValue }");
+			response => Task.FromResult(
+				predicate(response)
+					? HttpResponseTestResult.Pass()
+					: HttpResponseTestResult.Fail($"{ subject } is not { expectedValue }")
+			);
+
+		private static HttpResponseTest Factory(string subject, Func<HttpResponseMessage, Task<bool>> predicate, object expectedValue) =>
+			response => predicate(response).ContinueWith(
+				it => it.Result
+					? HttpResponseTestResult.Pass()
+					: HttpResponseTestResult.Fail($"{ subject } is not { expectedValue }")
+			);
 	}
 }

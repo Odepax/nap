@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Nap.Framework.Testing;
 using NUnit.Framework;
 using static System.Net.HttpStatusCode;
@@ -11,9 +12,9 @@ namespace Nap.PrototypingApi.Tests.Cat
 	{
 		[Test]
 		[NonParallelizable]
-		public static void Step_00_00_Ra()
+		public static async Task Step_00_00_Ra()
 		{
-			Api.Endpoints.Cat
+			await Api.Endpoints.Cat
 				.Get()
 				.AssertResponse(
 					HttpResponseTests.JsonResult(new object[0])
@@ -21,11 +22,11 @@ namespace Nap.PrototypingApi.Tests.Cat
 		}
 
 		[Test]
-		public static void Step_01_00_CR_D()
+		public static async Task Step_01_00_CR_D()
 		{
 			Guid created = Guid.Empty;
 
-			Api.Endpoints.Cat
+			await Api.Endpoints.Cat
 				.Post(new
 				{
 					name = "Felix",
@@ -35,7 +36,7 @@ namespace Nap.PrototypingApi.Tests.Cat
 					HttpResponseTests.CreatedWithId(Api.Endpoints.Cat.Url + "/{0}", id => created = id)
 				);
 
-			Api.Endpoints.Cat.Select(created.ToString())
+			await Api.Endpoints.Cat.Select(created.ToString())
 				.Get()
 				.AssertResponse(
 					HttpResponseTests.JsonResult(new
@@ -47,7 +48,7 @@ namespace Nap.PrototypingApi.Tests.Cat
 					})
 				);
 
-			Api.Endpoints.Cat.Select(created.ToString())
+			await Api.Endpoints.Cat.Select(created.ToString())
 				.Delete()
 				.AssertResponse(
 					HttpResponseTests.StatusCode(NoContent)
@@ -55,11 +56,11 @@ namespace Nap.PrototypingApi.Tests.Cat
 		}
 
 		[Test]
-		public static void Step_02_00_C_UR_D()
+		public static async Task Step_02_00_C_UR_D()
 		{
 			Guid created = Guid.Empty;
 
-			Api.Endpoints.Cat
+			await Api.Endpoints.Cat
 				.Post(new
 				{
 					name = "Felix",
@@ -69,7 +70,7 @@ namespace Nap.PrototypingApi.Tests.Cat
 					HttpResponseTests.CreatedWithId(Api.Endpoints.Cat.Url + "/{0}", id => created = id)
 				);
 
-			Api.Endpoints.Cat.Select(created.ToString())
+			await Api.Endpoints.Cat.Select(created.ToString())
 				.Put(new
 				{
 					name = "Felix",
@@ -80,7 +81,7 @@ namespace Nap.PrototypingApi.Tests.Cat
 					HttpResponseTests.StatusCode(NoContent)
 				);
 
-			Api.Endpoints.Cat.Select(created.ToString())
+			await Api.Endpoints.Cat.Select(created.ToString())
 				.Get()
 				.AssertResponse(
 					HttpResponseTests.JsonResult(new
@@ -92,7 +93,7 @@ namespace Nap.PrototypingApi.Tests.Cat
 					})
 				);
 
-			Api.Endpoints.Cat.Select(created.ToString())
+			await Api.Endpoints.Cat.Select(created.ToString())
 				.Delete()
 				.AssertResponse(
 					HttpResponseTests.StatusCode(NoContent)
@@ -100,11 +101,11 @@ namespace Nap.PrototypingApi.Tests.Cat
 		}
 
 		[Test]
-		public static void Step_03_00_UcR_D()
+		public static async Task Step_03_00_UcR_D()
 		{
 			Guid target = new Guid(200, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-			Api.Endpoints.Cat.Select(target.ToString())
+			await Api.Endpoints.Cat.Select(target.ToString())
 				.Put(new
 				{
 					name = "Garfield",
@@ -115,7 +116,7 @@ namespace Nap.PrototypingApi.Tests.Cat
 					HttpResponseTests.StatusCode(NoContent)
 				);
 
-			Api.Endpoints.Cat.Select(target.ToString())
+			await Api.Endpoints.Cat.Select(target.ToString())
 				.Get()
 				.AssertResponse(
 					HttpResponseTests.JsonResult(new
@@ -127,7 +128,7 @@ namespace Nap.PrototypingApi.Tests.Cat
 					})
 				);
 
-			Api.Endpoints.Cat.Select(target.ToString())
+			await Api.Endpoints.Cat.Select(target.ToString())
 				.Delete()
 				.AssertResponse(
 					HttpResponseTests.StatusCode(NoContent)
