@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -34,20 +35,54 @@ namespace Nap.Framework.Testing
 
 		public static HttpResponseTest JsonContent(object json)
 		{
-			string expectedJson = JsonSerializer.Serialize(json, new JsonSerializerOptions
-			{
-				PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-				DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-				IgnoreNullValues = false,
-				IgnoreReadOnlyProperties = false,
-				WriteIndented = true
-			});
+			JsonElement expectedJson = JsonDocument.Parse(
+				JsonSerializer.Serialize(json, new JsonSerializerOptions
+				{
+					PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+					DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+					IgnoreNullValues = false,
+					IgnoreReadOnlyProperties = false,
+					WriteIndented = true
+				})
+			).RootElement;
 
 			return Factory(
 				"Json content",
-				async response => (await response.Content.ReadAsStringAsync()).Equals(expectedJson),
+				async response => TestJson(expectedJson, JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement),
 				expectedJson
 			);
+		}
+
+		private static bool TestJson(JsonElement expected, JsonElement actual) =>
+			expected.ValueKind.Equals(actual.ValueKind) && expected.ValueKind switch
+			{
+				JsonValueKind.Object => expected.EnumerateObject()
+					.All(expectedProperty =>
+							actual.TryGetProperty(expectedProperty.Name, out JsonElement actualPropertyValue)
+						&& TestJson(expectedProperty.Value, actualPropertyValue)
+					),
+
+				JsonValueKind.Array => Enumerable.SequenceEqual(
+						new SortedSet<JsonElement>(expected.EnumerateArray(), new JsonHashCodeComparer()),
+						new SortedSet<JsonElement>(actual.EnumerateArray(), new JsonHashCodeComparer()),
+						new JsonEqualityComparer()
+					),
+
+				JsonValueKind.String => expected.GetString().Equals(actual.GetString()),
+				JsonValueKind.Number => expected.GetDouble().Equals(actual.GetDouble()),
+
+				_ => true // True, False, Null and Undefined are unit values.
+			};
+
+		private class JsonEqualityComparer : IEqualityComparer<JsonElement>
+		{
+			public bool Equals(JsonElement a, JsonElement b) => TestJson(a, b);
+			public int GetHashCode(JsonElement element) => element.GetHashCode();
+		}
+
+		private class JsonHashCodeComparer : IComparer<JsonElement>
+		{
+			public int Compare(JsonElement a, JsonElement b) => a.GetRawText().CompareTo(b.GetRawText());
 		}
 
 		public static HttpResponseTest JsonResult(object json) =>
@@ -67,7 +102,7 @@ namespace Nap.Framework.Testing
 					{
 						return HttpResponseTestResult.Fail("Content is not a valid id.");
 					}
-					else if(id == Guid.Empty)
+					else if (id == Guid.Empty)
 					{
 						return HttpResponseTestResult.Fail("Content is a 'zero' id.");
 					}
