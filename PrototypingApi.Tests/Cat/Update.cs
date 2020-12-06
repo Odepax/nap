@@ -40,10 +40,10 @@ namespace Nap.PrototypingApi.Tests.Cat
 				.AssertResponse(
 					JsonResult(new
 					{
+						id = created.ToString(),
 						name = "Felix",
 						purrPower = 2,
-						isGrumpy = true,
-						id = created.ToString()
+						isGrumpy = true
 					})
 				);
 
@@ -75,10 +75,10 @@ namespace Nap.PrototypingApi.Tests.Cat
 				.AssertResponse(
 					JsonResult(new
 					{
+						id = target.ToString(),
 						name = "Garfield",
 						purrPower = 1,
-						isGrumpy = false,
-						id = target.ToString()
+						isGrumpy = false
 					})
 				);
 

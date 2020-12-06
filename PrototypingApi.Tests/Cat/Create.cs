@@ -29,10 +29,10 @@ namespace Nap.PrototypingApi.Tests.Cat
 				.AssertResponse(
 					JsonResult(new
 					{
+						id = created.ToString(),
 						name = "Felix",
 						purrPower = 8,
-						isGrumpy = false,
-						id = created.ToString()
+						isGrumpy = false
 					})
 				);
 

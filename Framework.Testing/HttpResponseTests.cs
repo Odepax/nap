@@ -35,25 +35,26 @@ namespace Nap.Framework.Testing
 
 		public static HttpResponseTest JsonContent(object json)
 		{
-			JsonElement expectedJson = JsonDocument.Parse(
-				JsonSerializer.Serialize(json, new JsonSerializerOptions
-				{
-					PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-					DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-					IgnoreNullValues = false,
-					IgnoreReadOnlyProperties = false,
-					WriteIndented = true
-				})
-			).RootElement;
+			string expectedJson = JsonSerializer.Serialize(json, new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+				DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+				IgnoreNullValues = false,
+				IgnoreReadOnlyProperties = false,
+				WriteIndented = true
+			});
 
 			return Factory(
 				"Json content",
-				async response => TestJson(expectedJson, JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement),
+				async response => TestJson(
+					JsonDocument.Parse(expectedJson).RootElement,
+					JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement
+				),
 				expectedJson
 			);
 		}
 
-		private static bool TestJson(JsonElement expected, JsonElement actual) =>
+		public static bool TestJson(JsonElement expected, JsonElement actual) =>
 			expected.ValueKind.Equals(actual.ValueKind) && expected.ValueKind switch
 			{
 				JsonValueKind.Object => expected.EnumerateObject()

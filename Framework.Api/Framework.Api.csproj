@@ -1,6 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		
+		
+		
+		<!-- https://youtu.be/yrQaKv2mxFU?list=WL&t=528 -->
+		
+		
+		
+		
 		<TargetFramework>netcoreapp3.0</TargetFramework>
 		<LangVersion>8.0</LangVersion>
 		<Nullable>enable</Nullable>

@@ -1,10 +1,10 @@
 Nap
 ====
 
-![Unreleased](https://img.shields.io/badge/Status-Unreleased-red.svg?style=flat-square)
-![Unstable](https://img.shields.io/badge/Status-Unstable-red.svg?style=flat-square)
+![Unreleased](https://img.shields.io/badge/Status-Unreleased-red.svg)
+![Unstable](https://img.shields.io/badge/Status-Unstable-red.svg)
 
-<!-- ![NuGet: Nap](https://img.shields.io/nuget/v/Nap?style=flat-square&label=NuGet&logo=nuget) -->
+<!-- ![NuGet: Nap](https://img.shields.io/nuget/v/Nap&label=NuGet&logo=nuget) -->
 
 Quick REST &mdash; nap &mdash; API Generation from JSON.
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Nap.Framework.Testing;
 using NUnit.Framework;
@@ -62,10 +63,10 @@ namespace Nap.PrototypingApi.Tests.Cat
 					JsonContent(new[] {
 						new
 						{
+							id = created.ToString(),
 							name = "C",
 							purrPower = 1,
-							isGrumpy = true,
-							id = created.ToString()
+							isGrumpy = true
 						}
 					})
 				);
@@ -96,9 +97,9 @@ namespace Nap.PrototypingApi.Tests.Cat
 				.AssertResponse(
 					JsonContent(new[]
 					{
-						new { name = "C0", purrPower = 1, isGrumpy = true, id = created[0].ToString() },
-						new { name = "C1", purrPower = 1, isGrumpy = true, id = created[1].ToString() },
-						new { name = "C2", purrPower = 1, isGrumpy = true, id = created[2].ToString() }
+						new { id = created[0].ToString(), name = "C0", purrPower = 1, isGrumpy = true },
+						new { id = created[1].ToString(), name = "C1", purrPower = 1, isGrumpy = true },
+						new { id = created[2].ToString(), name = "C2", purrPower = 1, isGrumpy = true }
 					})
 				);
 
@@ -109,6 +110,66 @@ namespace Nap.PrototypingApi.Tests.Cat
 						StatusCode(NoContent)
 					)
 			));
+		}
+	
+		[Test]
+		public static void jso()
+		{
+			JsonElement a = JsonDocument.Parse(
+				JsonSerializer.Serialize(new object[] {
+					new
+					{
+						id = new Guid(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+						name = "C0",
+						purrPower = 1,
+						isGrumpy = true,
+					},
+					new
+					{
+						id = new Guid(2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+						name = "C2",
+						purrPower = 1,
+						isGrumpy = true,
+					}
+				},
+				new JsonSerializerOptions
+				{
+					PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+					DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+					IgnoreNullValues = false,
+					IgnoreReadOnlyProperties = false,
+					WriteIndented = true
+				})
+			).RootElement;
+
+			JsonElement b = JsonDocument.Parse(
+				JsonSerializer.Serialize(new object[] {
+					new
+					{
+						name = "C2",
+						purrPower = 1,
+						isGrumpy = true,
+						id = new Guid(2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+					},
+					new
+					{
+						name = "C0",
+						purrPower = 1,
+						isGrumpy = true,
+						id = new Guid(1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+					}
+				},
+				new JsonSerializerOptions
+					{
+						PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+						DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
+						IgnoreNullValues = false,
+						IgnoreReadOnlyProperties = false,
+						WriteIndented = true
+					})
+			).RootElement;
+
+			Assert.IsTrue(TestJson(a, b));
 		}
 	}
 }

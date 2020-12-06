@@ -16,4 +16,8 @@
 		<PackageReference Include="System.CodeDom" Version="4.6.0-preview8.19405.3" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Asp\" />
+	</ItemGroup>
+
 </Project>
