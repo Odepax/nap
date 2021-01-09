@@ -1,7 +1,0 @@
-Cat
-	Id int
-	Name string
-
-Bird
-	Id char
-	Size float
