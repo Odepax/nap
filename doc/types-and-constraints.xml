@@ -1,0 +1,648 @@
+<!-- Primitive types. -->
+
+<type id="bool">
+	<desc>A primitive field set to either true or false.</desc>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="bool"/>
+	</constraint>
+</type>
+
+<type id="int">
+	<desc>A primitive field containing an integer number.</desc>
+
+	<constraint cref="min">
+		<desc>Defines a minimum for the bare value of the field.</desc>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a maximum for the bare value of the field.</desc>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines bounds for the bare value of the field.</desc>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines excluded bounds for the bare value of the field.</desc>
+	</constraint>
+
+	<constraint cref="enum">
+		<param name="...allowed values" type="int"/>
+	</constraint>
+
+	<constraint cref="not one of">
+		<param name="...disallowed values" type="int"/>
+	</constraint>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="int"/>
+	</constraint>
+</type>
+
+<type id="float">
+	<desc>A primitive field containing an floating point number.</desc>
+
+	<constraint cref="min">
+		<desc>Defines a minimum for the bare value of the field.</desc>
+		<param name="min value" type="float"/>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a maximum for the bare value of the field.</desc>
+		<param name="max value" type="float"/>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines bounds for the bare value of the field.</desc>
+		<param name="min value" type="float"/>
+		<param name="max value" type="float"/>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines excluded bounds for the bare value of the field.</desc>
+		<param name="min value" type="float"/>
+		<param name="max value" type="float"/>
+	</constraint>
+
+	<constraint cref="enum">
+		<param name="...allowed values" type="float"/>
+	</constraint>
+
+	<constraint cref="not one of">
+		<param name="...disallowed values" type="float"/>
+	</constraint>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="float"/>
+	</constraint>
+</type>
+
+<type id="char">
+	<desc>A primitive field containing an character.</desc>
+
+	<constraint cref="enum">
+		<param name="...allowed values" type="char"/>
+	</constraint>
+
+	<constraint cref="not one of">
+		<param name="...disallowed values" type="char"/>
+	</constraint>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="char"/>
+	</constraint>
+</type>
+
+<type id="string">
+	<desc>A primitive field containing a string of characters, i.e. text.</desc>
+
+	<constraint cref="min">
+		<desc>Defines a minimum number of characters in the field's value.</desc>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a maximum number of characters in the field's value.</desc>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines bounds number of characters in the field's value.</desc>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines excluded bounds for the number of characters in the field's value.</desc>
+	</constraint>
+
+	<constraint cref="enum">
+		<param name="...allowed values" type="string"/>
+	</constraint>
+
+	<constraint cref="not one of">
+		<param name="...disallowed values" type="string"/>
+	</constraint>
+
+	<constraint cref="allow empty">
+		<desc>Indicates that the string can be left empty.</desc>
+	</constraint>
+
+	<constraint cref="not empty">
+		<desc>Indicates that the string must not be left empty.</desc>
+	</constraint>
+
+	<constraint cref="multiline"/>
+	<constraint cref="not multiline"/>
+	<constraint cref="pattern"/>
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="string"/>
+	</constraint>
+</type>
+
+<!-- Time-related types. -->
+
+<type id="date">
+	<desc>A field referencing a time point, with a precision up to year, month, day.</desc>
+
+	<constraint cref="min">
+		<desc>Defines an earliest time point the field can reference.</desc>
+		<param name="min value" type="iso8601-D"/>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a latest time point the field can reference.</desc>
+		<param name="max value" type="iso8601-D"/>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines a bounding time period for time point the field can reference.</desc>
+		<param name="min value" type="iso8601-D"/>
+		<param name="max value" type="iso8601-D"/>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines an excluded time period for time point the field can reference.</desc>
+		<param name="min value" type="iso8601-D"/>
+		<param name="max value" type="iso8601-D"/>
+	</constraint>
+
+	<constraint cref="enum">
+		<param name="...allowed values" type="iso8601-D"/>
+	</constraint>
+
+	<constraint cref="not one of">
+		<param name="...disallowed values" type="iso8601-D"/>
+	</constraint>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="iso8601-D"/>
+	</constraint>
+</type>
+
+<type id="datetime">
+	<desc>A field referencing a time point, with a precision up to year, month, day, hour, minutes, seconds.</desc>
+
+	<constraint cref="min">
+		<desc>Defines an earliest time point the field can reference.</desc>
+		<param name="min value" type="iso8601-DT"/>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a latest time point the field can reference.</desc>
+		<param name="max value" type="iso8601-DT"/>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines a bounding time period for time point the field can reference.</desc>
+		<param name="min value" type="iso8601-DT"/>
+		<param name="max value" type="iso8601-DT"/>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines an excluded time period for time point the field can reference.</desc>
+		<param name="min value" type="iso8601-DT"/>
+		<param name="max value" type="iso8601-DT"/>
+	</constraint>
+
+	<constraint cref="enum">
+		<param name="...allowed values" type="iso8601-DT"/>
+	</constraint>
+
+	<constraint cref="not one of">
+		<param name="...disallowed values" type="iso8601-DT"/>
+	</constraint>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="iso8601-DT"/>
+	</constraint>
+</type>
+
+<type id="duration">
+	<desc>A primitive field containing a time quantity, where years, months, days, hours, minutes and seconds are allowed to exceed their moduli.</desc>
+
+	<constraint cref="min">
+		<desc>Defines a minimum duration for the field.</desc>
+		<param name="min value" type="iso8601-P"/>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a maximum duration for the field.</desc>
+		<param name="max value" type="iso8601-P"/>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines bounds duration for the field.</desc>
+		<param name="min value" type="iso8601-P"/>
+		<param name="max value" type="iso8601-P"/>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines excluded bounds for the duration for the field.</desc>
+		<param name="min value" type="iso8601-P"/>
+		<param name="max value" type="iso8601-P"/>
+	</constraint>
+
+	<constraint cref="enum">
+		<param name="...allowed values" type="iso8601-P"/>
+	</constraint>
+
+	<constraint cref="not one of">
+		<param name="...disallowed values" type="iso8601-P"/>
+	</constraint>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+
+	<constraint cref="default">
+		<param name="value" type="iso8601-P"/>
+	</constraint>
+</type>
+
+<!-- Collections. -->
+
+<type id="set">
+	<desc>A collection in which elements are unordered.</desc>
+	<generic name="T">The type of the elements. Can be any type.</generic>
+
+	<constraint cref="min">
+		<desc>Defines a minimum number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a maximum number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines bounds number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines excluded bounds for the number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="allow empty"/>
+	<constraint cref="not empty"/>
+	<constraint cref="allow duplicates"/>
+	<constraint cref="no duplicates"/>
+
+	<constraint cref="same as">
+		<desc>Indicates that the collection must contain the same elements as another collection.</desc>
+	</constraint>
+
+	<constraint cref="not same as">
+		<desc>Indicates that the collection must have different elements than another collection.</desc>
+	</constraint>
+</type>
+
+<type id="list">
+	<desc>A collection in which elements are ordered and associated with a numeric index.</desc>
+	<generic name="T">The type of the elements. Can be any type.</generic>
+
+	<constraint cref="min">
+		<desc>Defines a minimum number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a maximum number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines bounds number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines excluded bounds for the number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="allow empty"/>
+	<constraint cref="not empty"/>
+	<constraint cref="allow duplicates"/>
+	<constraint cref="no duplicates"/>
+
+	<constraint cref="same as">
+		<desc>Indicates that the collection must contain the same elements as another collection.</desc>
+	</constraint>
+
+	<constraint cref="not same as">
+		<desc>Indicates that the collection must have different elements than another collection.</desc>
+	</constraint>
+</type>
+
+<type id="map">
+	<desc>A collection in which elements are associated with a specific key.</desc>
+	<generic name="K">The type of the keys. Can be any type.</generic>
+	<generic name="T">The type of the elements. Can be any type.</generic>
+
+	<constraint cref="min">
+		<desc>Defines a minimum number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="max">
+		<desc>Defines a maximum number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="between">
+		<desc>Defines bounds number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="not between">
+		<desc>Defines excluded bounds for the number of elements the collection can contain.</desc>
+	</constraint>
+
+	<constraint cref="allow empty"/>
+	<constraint cref="not empty"/>
+	<constraint cref="allow duplicates"/>
+	<constraint cref="no duplicates"/>
+
+	<constraint cref="same as">
+		<desc>Indicates that the collection must contain the same elements as another collection.</desc>
+	</constraint>
+
+	<constraint cref="not same as">
+		<desc>Indicates that the collection must have different elements than another collection.</desc>
+	</constraint>
+</type>
+
+<!-- Custom. -->
+
+<type id="Custom">
+	<desc>Nap allows the declaration of user-defined types by composing primitives and other user-defined types.</desc>
+	<generic name="...T">Custom types are free to have any number of generics, each can be of any type.</generic>
+
+	<constraint cref="same as"/>
+	<constraint cref="not same as"/>
+	<constraint cref="self"/>
+	<constraint cref="not self"/>
+	<constraint cref="optional"/>
+	<constraint cref="not optional"/>
+</type>
+
+<!-- Constraint parameter types. -->
+
+<cptype id="bool">Can be set to only two values: either true or false.</cptype>
+<cptype id="int">An integer number.</cptype>
+<cptype id="float">A floating point real number.</cptype>
+<cptype id="char">A character.</cptype>
+<cptype id="string">A text string.</cptype>
+<cptype id="regex">A regular expression.</cptype>
+<cptype id="iso8601-D">A dated time point, i.e. with year, month and day.</cptype>
+<cptype id="iso8601-DT">A date and a time, i.e. with year, month, day, hour, minutes and seconds.</cptype>
+<cptype id="iso8601-P">A time duration, where years, months, days, hours, minutes and seconds are allowed to exceed their moduli.</cptype>
+<cptype id="fieldref">A reference to a custom type's field.</cptype>
+
+<!-- Min. -->
+
+<constraint id="min">
+	<desc>Defines a minimum for the field.</desc>
+
+	<param name="min value" type="int">The value to be considered as a minimum.</param>
+	<param name="min inclusive" type="bool" default="true">Whether or not the min value is inclusive.</param>
+
+	<alias id="at least"/>
+	<alias id="not below"/>
+	<alias id="not before"/>
+
+	<alias id="above">
+		<param name="min inclusive" default="false"/>
+	</alias>
+
+	<alias id="after">
+		<param name="min inclusive" default="false"/>
+	</alias>
+</constraint>
+
+<!-- Max. -->
+
+<constraint id="max">
+	<desc>Defines a maximum for the field.</desc>
+
+	<param name="max value" type="int">The value to be considered as a maximum.</param>
+	<param name="max inclusive" type="bool" default="true">Whether or not the max value is inclusive.</param>
+
+	<alias id="at most"/>
+	<alias id="not after"/>
+	<alias id="not above"/>
+
+	<alias id="below">
+		<param name="max inclusive" default="false"/>
+	</alias>
+
+	<alias id="before">
+		<param name="max inclusive" default="false"/>
+	</alias>
+</constraint>
+
+<!-- Between. -->
+
+<constraint id="between">
+	<desc>Defines both minimum and maximum for the field.</desc>
+
+	<param name="min value" type="int">The value to be considered as a minimum.</param>
+	<param name="min inclusive" type="bool" default="false">Whether or not the min value is inclusive.</param>
+	<param name="max value" type="int">The value to be considered as a maximum.</param>
+	<param name="max inclusive" type="bool" default="false">Whether or not the max value is inclusive.</param>
+
+	<alias id="in">
+		<param name="min inclusive" default="true"/>
+		<param name="max inclusive" default="true"/>
+	</alias>
+</constraint>
+
+<!-- Not between. -->
+
+<constraint id="not between">
+	<desc>Defines a forbidden range for the field.</desc>
+
+	<param name="min value" type="int">The lower bound of the range.</param>
+	<param name="min inclusive" type="bool" default="false">Whether or not the min value is inclusive.</param>
+	<param name="max value" type="int">The upper bound of the range.</param>
+	<param name="max inclusive" type="bool" default="false">Whether or not the max value is inclusive.</param>
+
+	<alias id="not in">
+		<param name="min inclusive" default="true"/>
+		<param name="max inclusive" default="true"/>
+	</alias>
+</constraint>
+
+<!-- Inclusion. -->
+
+<constraint id="enum">
+	<desc>Defines a list of accepted constants for the field.</desc>
+
+	<param name="...allowed values">A list of whitelisted values.</param>
+
+	<alias id="one of"/>
+	<alias id="amongst"/>
+</constraint>
+
+<!-- Exclusion. -->
+
+<constraint id="not one of">
+	<desc>Defines a list of invalid constants for the field.</desc>
+	<param name="...disallowed values">A list of blacklisted values.</param>
+	<alias id="not amongst"/>
+</constraint>
+
+<!-- Empty. -->
+
+<constraint id="allow empty">
+	<desc>Indicates that the collection can be left with no elements.</desc>
+</constraint>
+
+<constraint id="not empty">
+	<desc>Indicates that the collection must not be left with no elements.</desc>
+</constraint>
+
+<!-- Multiline. -->
+
+<constraint id="multiline">
+	<desc>Allows the string to contain line breaks.</desc>
+</constraint>
+
+<constraint id="not multiline">
+	<desc>Disallows line breaks in the string.</desc>
+</constraint>
+
+<!-- Pattern. -->
+
+<constraint id="pattern">
+	<desc>Specifies a regex for the field to be checked against.</desc>
+	<param name="pattern" type="regex">A regular expression.</param>
+</constraint>
+
+<!-- Identity. -->
+
+<constraint id="same as">
+	<desc>Indicates that the field must have the same value as another field.</desc>
+	<param name="other" type="fieldref">A reference to the other field.</param>
+</constraint>
+
+<constraint id="not same as">
+	<desc>Indicates that the field must have a different value from another field.</desc>
+	<param name="other" type="fieldref">A reference to the other field.</param>
+</constraint>
+
+<constraint id="self">
+	<desc>Specifies that the field must reference its containing object.</desc>
+</constraint>
+
+<constraint id="not self">
+	<desc>Specifies that the field can reference anything except its containing object.</desc>
+</constraint>
+
+<!-- Optional. -->
+
+<constraint id="optional">
+	<desc>Allows the value of the field not to be specified.</desc>
+</constraint>
+
+<constraint id="not optional">
+	<desc>Specifies that the value of the field must always be specified.</desc>
+</constraint>
+
+<!-- Default. -->
+
+<constraint id="default">
+	<desc>Specifies a default value for the field.</desc>
+	<param name="value">The default value.</param>
+</constraint>
+
+<!-- Duplicates. -->
+
+<constraint id="allow duplicates">
+	<desc>Indicates that the collection allows elements to be duplicated.</desc>
+</constraint>
+
+<constraint id="no duplicates">
+	<desc>Indicates that the collection forbids duplicated elements.</desc>
+</constraint>
+
+<!--
+
+all/any ... HEY WAIT!
+
+We only have to deal with generic constraints this way because of OBGANISM!
+In reality, other input formats could declare { type: set, of: { string, allow empty: false } }
+And it would defo pass!
+
+not
+all
+not any
+
+all min
+all at least
+all above
+all after
+not any below
+not any before
+
+all max
+all at most
+all below
+all before
+not any after
+not any above
+
+all between
+all in
+
+not any between
+not any in
+
+all one of
+all amongst
+
+not any one of
+not any amongst
+
+all empty
+not any empty
+
+all multiline
+not any multiline
+
+all pattern
+
+all same as
+not any same as
+
+all self
+not any self
+
+all optional
+not any optional -->

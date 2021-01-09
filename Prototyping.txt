@@ -1,109 +1,132 @@
-Core <--- core lib with json/yaml/obo readers & asp generator, split-extract later
-Cli
-Cli.Tests
-PowerShell <--- later
-Framework.Api <--- (nuget) refactoring
-Framework.Testing <--- (nuget) refactoring
-SampleApi <--- removed :: put the json input in tests (single-click!)
-SampleApi.Tests <--------,
-PrototypingApi            >--- Why 2? As if the tests were gonna be different. Or will they indeed be?
-PrototypingApi.Tests <---'
+Built-in Data Types
+====
 
-----------------------------------------------------------------
+Primitive Types
+----
 
-FOR NOW, CLI HAS:
+`bool`, `int`, `float`, `char`, `string`.
 
-- nap poco definitions
-- json > nap poco reader
-- nap poco > asp writer
-	- asp poco definitions
-	- nap poco > asp poco converter
-	- asp poco writer
-- cl-interface
+Collections
+----
 
-Nap.Cli
-	Definitions
-		Service.cs
-		Resource.cs
-		Field.cs
-		...
-	Json
-		InputFileReader.cs
-		InputReader.cs
-	Asp
-		Definitions
-			DataStructureConvertionExtensions.cs
-			TypeInfo.cs
-		Generation
-			ApiBuilder.cs
-	Interface
-		HelpCommand.cs
-		BuildCommand.cs
-		VersionCommand.cs
-	Program.cs
+With `<` and `>` denoting generics:
 
-----------------------------------------------------------------
+- `set<T>`, where `T` is any element type.
+- `list<T>`, where `T` is any element type.
+- `map<K, T>`, where `K` is any key type, and `T` is any element type.
 
-{
-	"$schema": "https://github.com/Odepax/nap/wiki/schema/flexible-json-0.1.json",
-	"cat": {
-		"name": "string",
-		"purr power": { "type": "float", "in": [ 0.0, 1.0 ] },
-		"is grumpy": ["bool"],
-		"slaves": ["list", ["hooman"]],
-		"preys": { "list of": "hooman" }
-	},
-	"bird": {
-		"name": { "type": "string" },
-		"species": { "type": "string" },
-		"can fly": { "type": "bool }"
-	}
-}
+Dealing with Time
+----
 
-----------------------------------------------------------------
+- `date`: year, month, day.
+- `datetime`: year, month, day, hour, minutes, seconds.
+- `duration`: where years, months, days, hours, minutes and seconds are allowed to exceed their moduli.
 
-META
+Misc / Not There Yet
+----
 
-service {
-	name : string
-	resources : list of resource
-}
+- `id`: platform-specific-ness makes it hard to specify, though its opacity could be its value...
+- `color`: what color space? are some spaces larger than others?
+- `cron`: ow... but I don't know cron...
+- `file`: Wouldn't string with modifiers do the trick? Or Should we differenciate between paths and actual files?
+- Locale? E.g. "en_US" "fr_FR" (ISO 15897)
+- Currency?
+- Geo lat/long?
+- Address? Wouldn't a multiline string do the trick?
+- URL? => string?
+- RegExp? => string?
+- Gradient? (color) => list<(color, progress)>
+- Range?
 
-resource {
-	name : string
-	fields : list of resource field
-}
+Field Constraints
+====
 
-resource field {
-	name : string
-	type : string
-}
+```
+[TYPE] -- N --------- N -- [CONSTRAINT]
+                |
+             (EFFECT)
+```
 
-----------------------------------------------------------------
+Min / Max
+----
 
-Obganism equivalent:
+Parameters:
 
-"COMPACT" YAML:
-- type: [ cat ]
-  properties:
-    - [ name, [ string ], [ in, 1, 30 ] ]
-    - [ friends, [ list, [ cat ] ], [ not any optional ], [ not any self ] ]
+- The value to consider as a minimum.
+- The value to consider as a maximum.
+- Whether or not the minimum and maximum are inclusive or exclusive.
 
-YAML:
-- type:
-    name: cat
-  properties:
-    - name: name
-      type:
-        name: string
-      modifiers:
-        - name: in
-          parameters: [ 1, 30 ]
-    - name: friends
-      type:
-        name: list
-        generics:
-          - name: cat
-      modifiers:
-        - name: not any optional
-        - name: not any self
+| Alias      | By default, min is...              | By default, max is...              |
+|:---------- |:----------------------------------:|:----------------------------------:|
+| `min`      | :heavy_check_mark:       Inclusive |                                    |
+| `at least` | :heavy_check_mark:       Inclusive |                                    |
+| `above`    | :heavy_multiplication_x: Exclusive |                                    |
+| `after`    | :heavy_multiplication_x: Exclusive |                                    |
+| `max`      |                                    | :heavy_check_mark: Inclusive       |
+| `at most`  |                                    | :heavy_check_mark: Inclusive       |
+| `below`*   |                                    | :heavy_multiplication_x: Exclusive |
+| `before`   |                                    | :heavy_multiplication_x: Exclusive |
+| `between`  | :heavy_multiplication_x: Exclusive | :heavy_multiplication_x: Exclusive |
+| `in`       | :heavy_check_mark:       Inclusive | :heavy_check_mark: Inclusive       |
+
+\*And not _bellow_: thinks of _"be low"_...
+
+Applies to:
+
+- The bare values of [`int`](#primitive-types), [`float`](#primitive-types) and [`duration`](#dealing-with-time).
+- The number of characters in a [`string`](#primitive-types).
+- The number of elements in a [`set<T>`](#collections), [`list<T>`](#collections) or [`map<K, T>`](#collections).
+- The time points referenced by [`date`](#dealing-with-time) and [`datetime`](#dealing-with-time).
+
+Set Inclusion
+----
+
+Parameters: a list of whitelisted values.
+
+Aliases: `enum`, `one of`, `amongst`.
+
+Applies to:
+
+- The bare values of [`int`](#primitive-types), [`float`](#primitive-types), [`char`](#primitive-types), [`string`](#primitive-types) and [`duration`](#dealing-with-time).
+- The time points referenced by [`date`](#dealing-with-time) and [`datetime`](#dealing-with-time).
+
+String-Specials
+----
+
+- `empty` specifies that a [`string`](#primitive-types) must be empty.
+- `multiline` allows a [`string`](#primitive-types) to contain line breaks.
+- `pattern` checks the value of a [`string`](#primitive-types) against its regex parameter.
+
+Identity
+----
+
+- `same as`: the marked field's value must be the same as the value of the field passed in parameter.
+- `self`: the marked field's value must be its containing object; applies to custom types.
+
+Mics
+----
+
+- `optional` marks an input value as non-required.
+- `default` specifies a default value in parameter.
+
+Inverting Constraints
+----
+
+The `not` extension works with [`above`](#min-max), [`after`](#min-max), [`below`](#min-max), [`before`](#min-max), [`between`](#min-max), [`in`](#min-max), [`one of`](#set-inclusion), [`amongst`](#set-inclusion), [`empty`](#string-specials), [`multiline`](#string-specials), [`same as`](#identity), [`self`](#identity) and [`optional`](#mics).
+
+Constraining Collection Elements
+----
+
+- The `each` extension makes the constraint apply to all elements of a collection.
+- The `any` constraint is satisfied if at least one element of a non-empty collection satisfies the inner constraint.
+
+`each` and `any` work with [`min`](#min-max), [`at least`](#min-max), [`above`](#min-max), [`after`](#min-max), [`max`](#min-max), [`at most`](#min-max), [`below`](#min-max), [`before`](#min-max), [`between`](#min-max), [`in`](#min-max), [`enum`](#set-inclusion), [`one of`](#set-inclusion), [`amongst`](#set-inclusion), [`empty`](#string-specials), [`multiline`](#string-specials), [`pattern`](#string-specials), [`same as`](#identity), [`self`](#identity), [`optional`](#mics), as well as their [`not`](#inverting-constraints) counterparts, when applicable.
+
+Applies to: [`set<T>`](#collections), [`list<T>`](#collections) and [`map<K, T>`](#collections).
+
+Not There Yet
+----
+
+- `transparent` for `color`
+- `mimetype` for `file`
+- `unit` for `int` and `float`

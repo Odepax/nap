@@ -1,0 +1,6 @@
+{
+	"private": true,
+	"dependencies": {
+		"xmldoc": "^1.1.2"
+	}
+}
