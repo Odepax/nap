@@ -1,0 +1,8 @@
+<topic title="Define a Resource Type with Simple Fields" input="Obganism">
+	<code lang="obo">
+		cat {
+			id: int       ,  purr power: float
+			name: string  ,  is cute: bool
+		}
+	</code>
+</topic>
