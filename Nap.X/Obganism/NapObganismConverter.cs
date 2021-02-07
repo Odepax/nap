@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -46,7 +47,7 @@ namespace Nap.Obganism {
 			}
 
 			foreach (var resource in container.Resources)
-				WriteResource(code, resource);
+				AppendResource(code, resource);
 
 			return code.ToString();
 		}
@@ -54,14 +55,14 @@ namespace Nap.Obganism {
 		public static string ResourceToObganism(Resource resource) {
 			var code = new StringBuilder();
 
-			WriteResource(code, resource);
+			AppendResource(code, resource);
 
 			return code.ToString();
 		}
 
 		// ----
 
-		static void WriteResource(StringBuilder code, Resource resource) {
+		static void AppendResource(StringBuilder code, Resource resource) {
 			code.Append(resource.Name);
 
 			if (resource.GenericTemplates.Count != 0) {
@@ -167,13 +168,31 @@ namespace Nap.Obganism {
 		}
 
 		static void AppendFieldMeta(this StringBuilder code, FieldType fieldType) {
-			if (fieldType.Meta.Count != 0) {
+			var metaTargetGenericType = fieldType switch {
+				ListType listType => listType.ElementType,
+				SetType setType => setType.ElementType,
+				MapType mapType => mapType.ElementType,
+
+				ResourceType resourceType => resourceType.Generics.FirstOrDefault(),
+
+				_ => null
+			};
+
+			if (fieldType.Meta.Count + (metaTargetGenericType?.Meta.Count ?? 0) != 0) {
 				var modifierListStartPosition = code.Length;
 				var minMaxDone = false;
 				var modifierCount = 0;
 
+
 				foreach (var meta in fieldType.Meta)
 					(minMaxDone, modifierCount) = code.AppendMeta(meta, fieldType, minMaxDone, modifierCount);
+
+				if (metaTargetGenericType != null) {
+					minMaxDone = false;
+
+					foreach (var meta in metaTargetGenericType.Meta)
+						(minMaxDone, modifierCount) = code.AppendGenericMeta(meta, metaTargetGenericType, minMaxDone, modifierCount);
+				}
 
 				if (1 < modifierCount)
 					code.Insert(modifierListStartPosition, " -- ( ");
@@ -293,8 +312,96 @@ namespace Nap.Obganism {
 
 			return (minMaxDone, modifierCount);
 		}
+		
+		static (bool MinMaxDone, int ModifierCount) AppendGenericMeta(this StringBuilder code, KeyValuePair<string, object?> meta, FieldType genericType, bool minMaxDone, int modifierCount) {
+			if (meta.Value != null) switch (meta.Key) {
+				case NapBuiltInMeta.MinIsInclusive:
+				case NapBuiltInMeta.MaxIsInclusive:
+					break;
 
-		static void AppendMinMax(StringBuilder code, FieldType fieldType) {
+				case NapBuiltInMeta.Min:
+				case NapBuiltInMeta.Max:
+					if (!minMaxDone) {
+						code.Append(0 < modifierCount ? ", all " : "all ");
+						code.AppendMinMax(genericType);
+						minMaxDone = true;
+						++modifierCount;
+					}
+					break;
+
+				case NapBuiltInMeta.AllowedValues:
+					code.Append(0 < modifierCount ? ", all one of(" : "all one of(");
+					code.AppendMetaValue(meta.Value);
+					code.Append(')');
+					++modifierCount;
+					break;
+
+				case NapBuiltInMeta.ForbiddenValues:
+					code.Append(0 < modifierCount ? ", not any one of(" : "not any one of(");
+					code.AppendMetaValue(meta.Value);
+					code.Append(')');
+					++modifierCount;
+					break;
+
+				case NapBuiltInMeta.Pattern:
+					if (meta.Value is Regex regexValue) {
+						code.Append(0 < modifierCount ? @", all pattern(""" : @"all pattern(""");
+						code.Append(regexValue.ToString());
+						code.Append(regexValue.Options.HasFlag(RegexOptions.IgnoreCase) ? @""", ignore case)" : @""")");
+						++modifierCount;
+					}
+					break;
+
+				case NapBuiltInMeta.AllowEmpty:
+					if (0 < modifierCount) code.Append(", ");
+					code.Append(Equals(meta.Value, true) ? "any empty" : "not any empty");
+					++modifierCount;
+					break;
+
+				case NapBuiltInMeta.AllowMultiline:
+					if (0 < modifierCount) code.Append(", ");
+					code.Append(Equals(meta.Value, true) ? "any multiline" : "not any multiline");
+					++modifierCount;
+					break;
+
+				case NapBuiltInMeta.IsOptional:
+					if (0 < modifierCount) code.Append(", ");
+					code.Append(Equals(meta.Value, true) ? "all optional" : "not any optional");
+					++modifierCount;
+					break;
+
+				case NapBuiltInMeta.SameAs:
+					code.Append(0 < modifierCount ? @", all same as(""" : @"all same as(""");
+					code.Append(meta.Value);
+					code.Append(@""")");
+					++modifierCount;
+					break;
+
+				case NapBuiltInMeta.NotSameAs:
+					code.Append(0 < modifierCount ? @", not any same as(""" : @"not any same as(""");
+					code.Append(meta.Value);
+					code.Append(@""")");
+					++modifierCount;
+					break;
+
+				case NapBuiltInMeta.SelfReference:
+					switch (meta.Value) {
+						case SelfReference.Forbid:
+							code.Append(0 < modifierCount ? ", not any self" : "not any self");
+							++modifierCount;
+							break;
+						case SelfReference.Enforce:
+							code.Append(0 < modifierCount ? ", all self" : "all self");
+							++modifierCount;
+							break;
+					}
+					break;
+			}
+
+			return (minMaxDone, modifierCount);
+		}
+
+		static void AppendMinMax(this StringBuilder code, FieldType fieldType) {
 			var minPresent = fieldType.TryGetMeta(NapBuiltInMeta.Min, out object? min);
 			var maxPresent = fieldType.TryGetMeta(NapBuiltInMeta.Max, out object? max);
 
@@ -329,7 +436,7 @@ namespace Nap.Obganism {
 				code.Append(')');
 			}
 
-			else if (maxPresent) {
+			else { // Therefore maxPresent is true, assuming I don't call this methods for nothing...
 				code.Append(maxInclusive ? "max" : "below");
 				code.Append('(');
 				code.AppendMetaValue(max!);

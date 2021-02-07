@@ -5,7 +5,7 @@ using System.Collections.Immutable;
 // TODO: Re-type Resource.GenericTemplates to strings?
 
 namespace Nap {
-	public class NapContextMergingException : Exception {
+	public sealed class NapContextMergingException : Exception {
 		internal NapContextMergingException(string message) : base(message) {}
 	}
 

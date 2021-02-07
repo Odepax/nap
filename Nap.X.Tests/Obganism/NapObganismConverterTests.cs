@@ -276,10 +276,143 @@ namespace Nap.Obganism.Tests {
 						rc : sample
 					}
 				"
+			),
+			TestCase("Convert meta on collection generics",
+				new Resource {
+					Name = "sample",
+					Fields = new Dictionary<string, FieldType> {
+						["ia"] = new SetType(new IntType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.Min] = 1,
+								[NapBuiltInMeta.Max] = 42,
+								[NapBuiltInMeta.MinIsInclusive] = true,
+								[NapBuiltInMeta.MaxIsInclusive] = true
+							}
+						}),
+						["ib"] = new SetType(new IntType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.Min] = 1,
+								[NapBuiltInMeta.Max] = 42,
+								[NapBuiltInMeta.MinIsInclusive] = true,
+								[NapBuiltInMeta.MaxIsInclusive] = false
+							}
+						}),
+						["ic"] = new SetType(new IntType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.Min] = 1,
+								[NapBuiltInMeta.Max] = 42,
+								[NapBuiltInMeta.MinIsInclusive] = false,
+								[NapBuiltInMeta.MaxIsInclusive] = false
+							}
+						}),
+						["id"] = new SetType(new IntType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.Min] = 1,
+								[NapBuiltInMeta.MinIsInclusive] = false
+							}
+						}),
+						["ie"] = new SetType(new IntType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.Max] = 42,
+								[NapBuiltInMeta.MaxIsInclusive] = false
+							}
+						}),
+						["if"] = new SetType(new IntType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.Min] = 1,
+								[NapBuiltInMeta.MinIsInclusive] = true
+							}
+						}),
+						["ig"] = new SetType(new IntType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.Max] = 42,
+								[NapBuiltInMeta.MaxIsInclusive] = true
+							}
+						}),
 
-				// TODO: meta on collection generics
-				// nested generics are tested -- ok
+						["c"] = new SetType(new CharType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.AllowedValues] = new[] { 'A', 'B', 'C' }
+							}
+						}),
+						["s"] = new SetType(new StringType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.ForbiddenValues] = new[] { "Two", "Three" }
+							}
+						}),
+
+						["emails"] = new SetType(new StringType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.AllowEmpty] = false,
+								[NapBuiltInMeta.AllowMultiline] = false,
+								[NapBuiltInMeta.Pattern] = new Regex(@"[a-z0-9._-]@[a-z0-9._-]+\.[a-z]+", RegexOptions.IgnoreCase)
+							}
+						}),
+						["passwords"] = new SetType(new StringType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.NotSameAs] = "email"
+							}
+						}),
+						["password confirmations"] = new SetType(new StringType {
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.SameAs] = "password"
+							}
+						}),
+
+						["ra"] = new SetType(new ResourceType {
+							Name = "sample",
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.SelfReference] = SelfReference.Enforce
+							}
+						}),
+						["rb"] = new SetType(new ResourceType {
+							Name = "sample",
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.SelfReference] = SelfReference.Forbid,
+								[NapBuiltInMeta.IsOptional] = false
+							}
+						}),
+						["rc"] = new SetType(new ResourceType {
+							Name = "sample",
+							Meta = new Dictionary<string, object?> {
+								[NapBuiltInMeta.SelfReference] = SelfReference.Allow,
+								[NapBuiltInMeta.IsOptional] = true
+							}
+						})
+					}
+				},
+				@"
+					sample {
+						ia : set of int -- all in(1, 42)
+						ib : set of int -- all between(1, included, 42, excluded)
+						ic : set of int -- all between(1, 42)
+						id : set of int -- all above(1)
+						ie : set of int -- all below(42)
+						if : set of int -- all min(1)
+						ig : set of int -- all max(42)
+
+						c : set of char -- all one of(""A"", ""B"", ""C"")
+						s : set of string -- not any one of(""Two"", ""Three"")
+
+						emails : set of string -- ( not any empty, not any multiline, all pattern(""[a-z0-9._-]@[a-z0-9._-]+\.[a-z]+"", ignore case) )
+						passwords : set of string -- not any same as(""email"")
+						password confirmations : set of string -- all same as(""password"")
+
+						ra : set of sample -- all self
+						rb : set of sample -- ( not any self, not any optional )
+						rc : set of sample -- all optional
+					}
+				"
 			)
+
+			/*
+
+			TODO:
+
+			- Convert extra meta
+			- Convert extra meta on generics
+
+			*/
 		};
 	}
 }
