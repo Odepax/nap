@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<RootNamespace>Nap</RootNamespace>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Obganism" Version="0.2.0"/>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Nap\Nap.csproj"/>
+	</ItemGroup>
+</Project>
