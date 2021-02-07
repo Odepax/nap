@@ -28,10 +28,6 @@ namespace Nap {
 		public const string Max = "max";
 		public const string MinIsInclusive = "min inclusive";
 		public const string MaxIsInclusive = "max inclusive";
-		public const string ExclusionMin = "exclusion min";
-		public const string ExclusionMax = "exclusion max";
-		public const string ExclusionMinIsInclusive = "exclusion min inclusive";
-		public const string ExclusionMaxIsInclusive = "exclusion max inclusive";
 		public const string AllowedValues = "allowed values";
 		public const string ForbiddenValues = "forbidden values";
 		public const string AllowEmpty = "empty";
@@ -43,6 +39,17 @@ namespace Nap {
 		public const string SameAs = "same as";
 		public const string NotSameAs = "not same as";
 		public const string SelfReference = "self";
+	}
+
+	public enum SelfReference {
+		/// <summary> Tolerate references to all objects. </summary>
+		Allow,
+
+		/// <summary> Must reference the containing object. </summary>
+		Enforce,
+
+		/// <summary> Must not reference the containing object. </summary>
+		Forbid
 	}
 
 	// Inputs
@@ -69,6 +76,8 @@ namespace Nap {
 		/// When merging, at least one partial context must have a non-null, non-blank name.
 		/// All such named partial contexts must have the same name.
 		///
+		/// If you're looking for conventions: use lower case, space-separated names.
+		///
 		/// Leave null or blank not to participate in the merged context's naming.
 		/// </summary>
 		public string? Name { get; set; }
@@ -87,6 +96,8 @@ namespace Nap {
 	public sealed class PartialContainer {
 		/// <summary>
 		/// Must be set: merging null- or blank-named partial containers will throw.
+		///
+		/// If you're looking for conventions: use lower case, space-separated names.
 		/// </summary>
 		public string? Name { get; set; }
 
@@ -107,6 +118,8 @@ namespace Nap {
 		/// <summary>
 		/// Must be set: merging null- or blank-named partial resources will throw.
 		/// Keep in mind that it is invalid to override <see cref="NapBuiltInTypes"/>.
+		///
+		/// If you're looking for conventions: use lower case, space-separated names.
 		/// </summary>
 		public string? Name { get; set; }
 
@@ -116,11 +129,14 @@ namespace Nap {
 		/// as long as complementary resources fill them at merge time.
 		///
 		/// The value is the non-blank name of the generic template type.
+		/// If you're looking for conventions: use lower case, space-separated names.
 		/// </summary>
 		public IDictionary<int, string> GenericTemplates { get; } = new Dictionary<int, string>();
 
 		/// <summary>
 		/// The key is the non-blank name of the field.
+		/// If you're looking for conventions: use lower case, space-separated names.
+		///
 		/// The value is the type of the field.
 		/// </summary>
 		public IDictionary<string, PartialFieldType> Fields { get; } = new Dictionary<string, PartialFieldType>();
@@ -136,6 +152,8 @@ namespace Nap {
 		///
 		/// Use the constants defined in <see cref="NapBuiltInTypes"/> to mitigate typing mistakes
 		/// when referencing built-in primitive types.
+		///
+		/// If you're looking for conventions: use lower case, space-separated names.
 		///
 		/// Leave null or blank not to participate in the merged field type's naming.
 		/// </summary>
@@ -154,7 +172,8 @@ namespace Nap {
 		/// Free-For-All metadata bag.
 		/// Use <see cref="NapBuiltInMeta"/> keys to set built-in Nap meta.
 		///
-		/// If you're looking for conventions: use <c>.</c> to namespace your custom meta names.
+		/// If you're looking for conventions: use lower case, space-separated names,
+		/// use <c>.</c> to namespace your custom meta names.
 		/// </summary>
 		public IDictionary<string, object?> Meta { get; } = new Dictionary<string, object?>();
 	}
@@ -219,17 +238,6 @@ namespace Nap {
 	public sealed class ResourceType : FieldType {
 		public string Name { get; init; } = string.Empty;
 		public IReadOnlyList<FieldType> Generics { get; init; } = ImmutableList<FieldType>.Empty;
-	}
-
-	public enum SelfReference {
-		/// <summary> Tolerate references to all objects. </summary>
-		Allow,
-
-		/// <summary> Must reference the containing object. </summary>
-		Enforce,
-
-		/// <summary> Must not reference the containing object. </summary>
-		Forbid
 	}
 
 	public sealed class BoolType : FieldType {}

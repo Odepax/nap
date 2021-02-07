@@ -461,11 +461,6 @@ namespace Nap {
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
 
-			[NapBuiltInMeta.ExclusionMin] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
-
 			[NapBuiltInMeta.Default] = ValueIsInt,
 			[NapBuiltInMeta.IsOptional] = ValueIsBool,
 
@@ -481,11 +476,6 @@ namespace Nap {
 			[NapBuiltInMeta.Max] = ValueIsFloat,
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
-
-			[NapBuiltInMeta.ExclusionMin] = ValueIsFloat,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsFloat,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
 
 			[NapBuiltInMeta.Default] = ValueIsFloat,
 			[NapBuiltInMeta.IsOptional] = ValueIsBool,
@@ -518,11 +508,6 @@ namespace Nap {
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
 
-			[NapBuiltInMeta.ExclusionMin] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
-
 			[NapBuiltInMeta.Default] = ValueIsString,
 			[NapBuiltInMeta.IsOptional] = ValueIsBool,
 
@@ -538,11 +523,6 @@ namespace Nap {
 			[NapBuiltInMeta.Max] = ValueIsDateTime,
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
-
-			[NapBuiltInMeta.ExclusionMin] = ValueIsDateTime,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsDateTime,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
 
 			[NapBuiltInMeta.Default] = ValueIsDateTime,
 			[NapBuiltInMeta.IsOptional] = ValueIsBool,
@@ -560,11 +540,6 @@ namespace Nap {
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
 
-			[NapBuiltInMeta.ExclusionMin] = ValueIsDateTime,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsDateTime,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
-
 			[NapBuiltInMeta.Default] = ValueIsDateTime,
 			[NapBuiltInMeta.IsOptional] = ValueIsBool,
 
@@ -580,11 +555,6 @@ namespace Nap {
 			[NapBuiltInMeta.Max] = ValueIsTimeSpan,
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
-
-			[NapBuiltInMeta.ExclusionMin] = ValueIsTimeSpan,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsTimeSpan,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
 
 			[NapBuiltInMeta.Default] = ValueIsTimeSpan,
 			[NapBuiltInMeta.IsOptional] = ValueIsBool,
@@ -602,11 +572,6 @@ namespace Nap {
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
 
-			[NapBuiltInMeta.ExclusionMin] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
-
 			[NapBuiltInMeta.SameAs] = ValueIsString,
 			[NapBuiltInMeta.NotSameAs] = ValueIsString
 		};
@@ -620,11 +585,6 @@ namespace Nap {
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
 
-			[NapBuiltInMeta.ExclusionMin] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
-
 			[NapBuiltInMeta.SameAs] = ValueIsString,
 			[NapBuiltInMeta.NotSameAs] = ValueIsString
 		};
@@ -637,11 +597,6 @@ namespace Nap {
 			[NapBuiltInMeta.Max] = ValueIsInt,
 			[NapBuiltInMeta.MinIsInclusive] = ValueIsBool,
 			[NapBuiltInMeta.MaxIsInclusive] = ValueIsBool,
-
-			[NapBuiltInMeta.ExclusionMin] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMax] = ValueIsInt,
-			[NapBuiltInMeta.ExclusionMinIsInclusive] = ValueIsBool,
-			[NapBuiltInMeta.ExclusionMaxIsInclusive] = ValueIsBool,
 
 			[NapBuiltInMeta.SameAs] = ValueIsString,
 			[NapBuiltInMeta.NotSameAs] = ValueIsString

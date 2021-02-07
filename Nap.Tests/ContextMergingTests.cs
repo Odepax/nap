@@ -3017,11 +3017,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
 
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
-
 			AssertMeta(NapBuiltInMeta.Default, expected, actual);
 			AssertMeta(NapBuiltInMeta.IsOptional, expected, actual);
 		}
@@ -3034,11 +3029,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.MinIsInclusive, expected, actual);
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
-
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
 
 			AssertMeta(NapBuiltInMeta.Default, expected, actual);
 			AssertMeta(NapBuiltInMeta.IsOptional, expected, actual);
@@ -3065,11 +3055,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
 
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
-
 			AssertMeta(NapBuiltInMeta.Default, expected, actual);
 			AssertMeta(NapBuiltInMeta.IsOptional, expected, actual);
 		}
@@ -3082,11 +3067,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.MinIsInclusive, expected, actual);
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
-
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
 
 			AssertMeta(NapBuiltInMeta.Default, expected, actual);
 			AssertMeta(NapBuiltInMeta.IsOptional, expected, actual);
@@ -3101,11 +3081,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
 
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
-
 			AssertMeta(NapBuiltInMeta.Default, expected, actual);
 			AssertMeta(NapBuiltInMeta.IsOptional, expected, actual);
 		}
@@ -3118,11 +3093,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.MinIsInclusive, expected, actual);
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
-
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
 
 			AssertMeta(NapBuiltInMeta.Default, expected, actual);
 			AssertMeta(NapBuiltInMeta.IsOptional, expected, actual);
@@ -3138,11 +3108,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.MinIsInclusive, expected, actual);
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
-
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
 		}
 
 		static void AssertListType(ListType expected, ListType actual) {
@@ -3155,11 +3120,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.MinIsInclusive, expected, actual);
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
-
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
 		}
 
 		static void AssertMapType(MapType expected, MapType actual) {
@@ -3173,11 +3133,6 @@ namespace Nap.Tests {
 			AssertMeta(NapBuiltInMeta.MinIsInclusive, expected, actual);
 			AssertMeta(NapBuiltInMeta.Max, expected, actual);
 			AssertMeta(NapBuiltInMeta.MaxIsInclusive, expected, actual);
-
-			AssertMeta(NapBuiltInMeta.ExclusionMin, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMinIsInclusive, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMax, expected, actual);
-			AssertMeta(NapBuiltInMeta.ExclusionMaxIsInclusive, expected, actual);
 		}
 
 		static void AssertResourceType(ResourceType expected, ResourceType actual) {
