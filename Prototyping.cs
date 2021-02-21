@@ -40,7 +40,7 @@ case => Kotlin sealed class
 
 */
 
-class Function { // Or maybe "Equation"?
+class Function {
 	public Function(string equation) {}
 	public Function(Func<float, float> @delegate) {} // Is it even possible? Is it even desirable?
 	public Function(Expression<Func<float, float>> expression) {}
@@ -53,6 +53,7 @@ class Function { // Or maybe "Equation"?
 	public override string ToString() => "y = f(x)";
 
 	// Df: How to compute? How to infer? How to validate instructions against it? How to validate it against instructions?
+	// Domain => x v.s. Range => y @see https://www.onlinemathlearning.com/image-files/domain-range.png
 	// Validation: How?
 	// Json Serialization: Stack-based: [
 	//    "x", "x", "*",

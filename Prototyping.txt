@@ -36,6 +36,8 @@ Misc / Not There Yet
 - URL? => string?
 - RegExp? => string?
 - Gradient? (color) => list<(color, progress)>
+                    => @see https://www.alanzucconi.com/2016/01/06/colour-interpolation/
+                    => @see https://www.alanzucconi.com/2021/01/24/linear-interpolation/
 - Range?
 
 Field Constraints

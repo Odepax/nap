@@ -1,8 +1,8 @@
 Odepax Nap License
 ====
 
-![Code License: MIT](https://img.shields.io/badge/Source_Code-MIT-green.svg?style=flat-square)
-![Contents License: CC-BY-NC](https://img.shields.io/badge/Contents-CC--BY--NC-orange.svg?style=flat-square)
+![Code License: MIT](https://img.shields.io/badge/Code-MIT-green.svg)
+![Contents License: CC-BY-NC](https://img.shields.io/badge/Contents-CC--BY--NC-orange.svg)
 
 1. [Source Code License](#source-code-license)
 2. [Artworks and Text Contents License](#artworks-and-text-contents-license)
