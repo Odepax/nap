@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -312,7 +312,7 @@ namespace Nap.Obganism {
 
 			return (minMaxDone, modifierCount);
 		}
-		
+
 		static (bool MinMaxDone, int ModifierCount) AppendGenericMeta(this StringBuilder code, KeyValuePair<string, object?> meta, FieldType genericType, bool minMaxDone, int modifierCount) {
 			if (meta.Value != null) switch (meta.Key) {
 				case NapBuiltInMeta.MinIsInclusive:

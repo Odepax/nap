@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
@@ -411,7 +411,6 @@ namespace Nap.Obganism.Tests {
 
 			- Convert extra meta
 			- Convert extra meta on generics
-
 			*/
 		};
 	}

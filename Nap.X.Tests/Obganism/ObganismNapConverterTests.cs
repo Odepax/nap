@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -661,7 +661,7 @@ namespace Nap.Obganism.Tests {
 			TODO:
 
 			- Set built-in meta on field custom type generics
-				A. 1st generic
+				A. 1st generic (should be the default already)
 				B. Not allowed
 
 			- Set extra meta on field type
