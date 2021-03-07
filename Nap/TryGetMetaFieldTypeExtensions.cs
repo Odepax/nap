@@ -9,7 +9,7 @@ namespace Nap {
 	/// Type-safe extensions for retrieving built-in metadata from resource fields' types.
 	/// </summary>
 	public static class TryGetMetaFieldTypeExtensions {
-		public static bool TryGetMeta<T>(this FieldType @this, string key, [NotNullWhen(true), NotNullIfNotNull("@default")] out T? @out, T? @default = default) {
+		public static bool TryGetMeta<T>(this FieldType @this, string key, [NotNullWhen(true), NotNullIfNotNull("default")] out T? @out, T? @default = default) {
 			if (@this.Meta.TryGetValue(key, out var value) && value is T typedValue) {
 				@out = typedValue;
 				return true;

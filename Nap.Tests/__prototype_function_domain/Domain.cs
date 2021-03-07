@@ -804,7 +804,7 @@ namespace Nap {
 			//      |____A____|____B____|
 			//      a        bc         d
 
-			AssertDomain(new Domain<int>(10, a, 20, a && !b), A - B);
+			AssertDomain(new Domain<int>(10, a, 20, b && !c), A - B);
 			AssertDomain(new Domain<int>(20, c && !b, 30, d), B - A);
 		}
 
@@ -1109,6 +1109,47 @@ namespace Nap {
 			AssertDomain((A - B) - C, A - (B | C), testValues);
 			AssertDomain(A, (A - B) | (A - C), testValues);
 			AssertDomain((A | B) - (A | C), (B - A) - C, testValues);
+
+			A = (
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(5, true, 7, true)
+				| new Domain<int>(9, true, 12, true)
+				| new Domain<int>(14, true, 15, true)
+				| new Domain<int>(18, true, 23, true)
+			);
+			
+			B = (
+				  new Domain<int>(1, true, 3, true)
+				| new Domain<int>(6, true, 8, true)
+				| new Domain<int>(10, true, 11, true)
+				| new Domain<int>(13, true, 16, true)
+				| new Domain<int>(17, true, 19, true)
+				| new Domain<int>(20, true, 21, true)
+				| new Domain<int>(22, true, 24, true)
+			);
+
+			//                    __B__          __B__        _B_         _____B_____     ___B___     _B_     ___B___
+			//                   |     |        |     |      |   |       |           |   |       |   |   |   |       |
+			testValues = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24 };
+			//                      |__A__|  |__A__|     |_____A_____|       |_A_|           |_________A_________|
+
+			AssertDomain((
+				  new Domain<int>(3, false, 4, true)
+				| new Domain<int>(5, true, 6, false)
+				| new Domain<int>(9, true, 10, false)
+				| new Domain<int>(11, false, 12, true)
+				| new Domain<int>(19, false, 20, false)
+				| new Domain<int>(21, false, 22, false)
+			), A - B);
+
+			AssertDomain((
+				  new Domain<int>(1, true, 2, false)
+				| new Domain<int>(7, false, 8, true)
+				| new Domain<int>(13, true, 14, false)
+				| new Domain<int>(15, false, 16, true)
+				| new Domain<int>(17, true, 18, false)
+				| new Domain<int>(23, false, 24, true)
+			), B - A);
 		}
 
 		// DisjunctiveUnion
@@ -1488,9 +1529,9 @@ namespace Nap {
 
 		public Domain(T value) => Parts = ImmutableArray.Create(new Part(value, true, value, true));
 
-		public Domain(T lower,                     T upper                    ) : this(upper,          true, lower,          true) {}
-		public Domain(T lower, bool lowerIncluded, T upper                    ) : this(upper, lowerIncluded, lower,          true) {}
-		public Domain(T lower,                     T upper, bool upperIncluded) : this(upper,          true, lower, upperIncluded) {}
+		public Domain(T lower, /*               */ T upper /*              */ ) : this(upper, /*    */ true, lower, /*    */ true) {}
+		public Domain(T lower, bool lowerIncluded, T upper /*              */ ) : this(upper, lowerIncluded, lower, /*    */ true) {}
+		public Domain(T lower, /*               */ T upper, bool upperIncluded) : this(upper, /*    */ true, lower, upperIncluded) {}
 		public Domain(T lower, bool lowerIncluded, T upper, bool upperIncluded) {
 			var comparison = lower.CompareTo(upper);
 
@@ -1584,8 +1625,8 @@ namespace Nap {
 
 		/// <summary> Intersection. </summary>
 		public static Domain<T> operator &(Domain<T> a, Domain<T> b) {
-			if (a.Parts == null || a.Parts.Length == 0 || b.Parts == null || b.Parts.Length == 0)
-				return default;
+			if (a.Parts == null || a.Parts.Length == 0) return default;
+			if (b.Parts == null || b.Parts.Length == 0) return default;
 
 			var parts = ImmutableArray.CreateBuilder<Part>(Math.Max(a.Parts.Length, b.Parts.Length));
 
@@ -1602,7 +1643,7 @@ namespace Nap {
 					++i;
 				}
 
-				// A hask to avoid skipping A-parts overlapping with 2 B-parts.
+				// A hack to avoid skipping A-parts overlapping with 2 B-parts.
 				if (i != 0)
 					--i;
 			}
@@ -1627,14 +1668,99 @@ namespace Nap {
 		}
 
 		/// <summary> Difference. </summary>
-		public static Domain<T> operator -(Domain<T> a, Domain<T> b) => default;
+		public static Domain<T> operator -(Domain<T> a, Domain<T> b) {
+			if (a.Parts == null || a.Parts.Length == 0) return default;
+			if (b.Parts == null || b.Parts.Length == 0) return a;
+
+			var parts = ImmutableArray.CreateBuilder<Part>(a.Parts.Length + b.Parts.Length);
+
+			//parts.AddRange(a.Parts);
+
+			//// For each new part, test the new part for overlap with existing parts.
+			//var i = 0;
+			//for (var j = 0; j < b.Parts.Length; ++j) {
+			//	var bPart = b.Parts[j];
+
+			//	// Move forward while the existing part comes before the new part: we're not in position yet.
+			//	while (i < parts.Count && parts[i].Upper.ComesBefore(bPart.Lower, !(parts[i].UpperIncluded || bPart.LowerIncluded)))
+			//		++i;
+
+			//	// Merge and remove while the existing part overlaps the new part.
+			//	while (i < parts.Count && parts[i].Lower.ComesBefore(bPart.Upper, parts[i].LowerIncluded || bPart.UpperIncluded)) {
+			//		var aPart = parts[i];
+
+			//		// If there's some of A left on the lower side, subtract and insert it.
+			//		if (aPart.Lower.ComesBefore(bPart.Lower, aPart.LowerIncluded && !bPart.LowerIncluded))
+			//			parts[i] = new Part(aPart.Lower, aPart.LowerIncluded, bPart.Lower, !bPart.LowerIncluded);
+
+			//		// If there's some of A left on the upper side, drop the lower side.
+			//		if (bPart.Upper.ComesBefore(aPart.Upper, aPart.UpperIncluded && !bPart.UpperIncluded))
+			//			parts.Insert(++i, new Part(bPart.Upper, !bPart.UpperIncluded, aPart.Upper, aPart.UpperIncluded));
+			//	}
+			//}
+
+			/*
+
+			foreach bPart {
+				while !overlap
+					skip
+
+				while overlap
+					if left side remains
+						replace current by left
+					if right side remains
+						swap
+			}
+
+			*/
+
+			//// For each new part, test the new part for overlap with existing parts.
+			//var j = 0;
+			//for (var i = 0; i < a.Parts.Length; ++i) {
+			//	var aPart = a.Parts[i];
+
+			//	// Move forward while the subtracted part comes before the base part: we're not in position yet.
+			//	while (j < b.Parts.Length && b.Parts[j].Upper.ComesBefore(aPart.Lower, !(b.Parts[j].UpperIncluded && aPart.LowerIncluded)))
+			//		++j;
+
+			//	// Insert A if this was the last B-part, or if the next B-part doesn't overlap.
+			//	if (b.Parts.Length <= j || aPart.Upper.ComesBefore(b.Parts[j].Lower, !(aPart.UpperIncluded && b.Parts[j].LowerIncluded)))
+			//		parts.Add(aPart);
+
+			//	// Subtract and insert the overlaping parts.
+			//	else do {
+			//		// If there's some of A left on the lower side, subtract and insert it.
+			//		if (aPart.Lower.ComesBefore(b.Parts[j].Lower, aPart.LowerIncluded && ! b.Parts[j].LowerIncluded))
+			//			parts.Add(new Part(aPart.Lower, aPart.LowerIncluded, b.Parts[j].Lower, !b.Parts[j].LowerIncluded));
+
+			//		// If there's some of A left on the upper side, drop the lower side.
+			//		if (b.Parts[j].Upper.ComesBefore(aPart.Upper, aPart.UpperIncluded && !b.Parts[j].UpperIncluded)) {
+			//			aPart = new Part(b.Parts[j].Upper, !b.Parts[j].UpperIncluded, aPart.Upper, aPart.UpperIncluded);
+			//			++j;
+
+			//			// Insert the remaining of A if this was the last B-part, or if the next B-part doesn't overlap.
+			//			if (b.Parts.Length <= j || aPart.Upper.ComesBefore(b.Parts[j].Lower, !(aPart.UpperIncluded && b.Parts[j].LowerIncluded))) {
+			//				parts.Add(aPart);
+			//				break;
+			//			}
+			//		}
+
+			//		else ++j;
+			//	} while (j < b.Parts.Length && b.Parts[j].Lower.ComesBefore(aPart.Upper, b.Parts[j].LowerIncluded && aPart.UpperIncluded));
+			//}
+
+			return new Domain<T>(parts.ToImmutable());
+		}
 
 		/// <summary> Symmetric difference, a.k.a. Disjunctive union. </summary>
 		public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => default;
 
 		// TODO Difference graal
-		// TODO DisjunctiveUnion graal
 
+		// TODO use this for DisjunctiveUnion: public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => (a | b) - (a & b);
+		// TODO benchmark the DisjunctiveUnion
+		// TODO DisjunctiveUnion graal
+		// TODO benchmark the DisjunctiveUnion again
 
 		//public static Domain<T> operator +(T a, Domain<T> b) => b + a;
 		//public static Domain<T> operator +(Domain<T> a, T b) => default;
