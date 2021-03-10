@@ -985,8 +985,8 @@ namespace Nap {
 				| new Domain<int>(12, true, 12, true)
 				| new Domain<int>(13, false, 14, true)
 				| new Domain<int>(15, true, 16, true)
-				| new Domain<int>(18, false, 19, true)
-				| new Domain<int>(20, true, 21, false)
+				| new Domain<int>(17, true, 18, false)
+				| new Domain<int>(21, false, 22, true)
 			), (B | D | E | F | G) - A);
 
 			AssertDomain((
@@ -1055,7 +1055,13 @@ namespace Nap {
 
 			AssertDomain((A - B) - C, (A - C) - B, testValues);
 			AssertDomain((A - B) - C, A - (B | C), testValues);
-			AssertDomain(A, (A - B) | (A - C), testValues);
+
+			AssertDomain((
+				  new Domain<int>(5, true, 7, true)
+				| new Domain<int>(9, true, 10, false)
+				| new Domain<int>(18, false, 21, true)
+			), (A - B) | (A - C), testValues);
+
 			AssertDomain((A | B) - (A | C), (B - A) - C, testValues);
 
 			A = (
@@ -1092,12 +1098,12 @@ namespace Nap {
 				| new Domain<int>(12, true, 14, true)
 				| new Domain<int>(17, true, 19, false)
 				| new Domain<int>(25, false, 26, true)
-				| new Domain<int>(33, false, 34, true)
+				| new Domain<int>(33, true, 34, true)
 			), A - B);
 
 			AssertDomain((
 				  new Domain<int>(7, false, 8, false)
-				| new Domain<int>(15, false, 16, true)
+				| new Domain<int>(15, true, 16, true)
 				| new Domain<int>(19, false, 20, true)
 				| new Domain<int>(21, true, 22, true)
 				| new Domain<int>(23, false, 24, true)
@@ -1107,7 +1113,19 @@ namespace Nap {
 
 			AssertDomain((A - B) - C, (A - C) - B, testValues);
 			AssertDomain((A - B) - C, A - (B | C), testValues);
-			AssertDomain(A, (A - B) | (A - C), testValues);
+
+			AssertDomain((
+				  new Domain<int>(1, true, 2, true)
+				| new Domain<int>(3, true, 4, true)
+				| new Domain<int>(5, true, 6, false)
+				| new Domain<int>(8, true, 10, true)
+				| new Domain<int>(12, true, 15, false)
+				| new Domain<int>(17, true, 19, false)
+				| new Domain<int>(24, false, 27, false)
+				| new Domain<int>(29, true, 31, true)
+				| new Domain<int>(32, true, 34, true)
+			), (A - B) | (A - C), testValues);
+
 			AssertDomain((A | B) - (A | C), (B - A) - C, testValues);
 
 			A = (
@@ -1117,7 +1135,7 @@ namespace Nap {
 				| new Domain<int>(14, true, 15, true)
 				| new Domain<int>(18, true, 23, true)
 			);
-			
+
 			B = (
 				  new Domain<int>(1, true, 3, true)
 				| new Domain<int>(6, true, 8, true)
@@ -1674,88 +1692,36 @@ namespace Nap {
 
 			var parts = ImmutableArray.CreateBuilder<Part>(a.Parts.Length + b.Parts.Length);
 
-			//parts.AddRange(a.Parts);
+			parts.AddRange(a.Parts);
 
-			//// For each new part, test the new part for overlap with existing parts.
-			//var i = 0;
-			//for (var j = 0; j < b.Parts.Length; ++j) {
-			//	var bPart = b.Parts[j];
+			var i = 0;
+			foreach (var bPart in b.Parts) {
+				// Move forward while the existing part comes before the new part: we're not in position yet.
+				while (i < parts.Count && parts[i].Upper.ComesBefore(bPart.Lower, !(parts[i].UpperIncluded && bPart.LowerIncluded)))
+					++i;
 
-			//	// Move forward while the existing part comes before the new part: we're not in position yet.
-			//	while (i < parts.Count && parts[i].Upper.ComesBefore(bPart.Lower, !(parts[i].UpperIncluded || bPart.LowerIncluded)))
-			//		++i;
+				// Subtract and insert the overlaping parts.
+				while (i < parts.Count && parts[i].Lower.ComesBefore(bPart.Upper, parts[i].LowerIncluded && bPart.UpperIncluded)) {
+					// If there's some of A left on the lower side, subtract and insert it.
+					if (parts[i].Lower.ComesBefore(bPart.Lower, parts[i].LowerIncluded && !bPart.LowerIncluded)) {
+						parts.Insert(i, new Part(parts[i].Lower, parts[i].LowerIncluded, bPart.Lower, !bPart.LowerIncluded));
+						++i; // Keep the current aPart current.
+					}
 
-			//	// Merge and remove while the existing part overlaps the new part.
-			//	while (i < parts.Count && parts[i].Lower.ComesBefore(bPart.Upper, parts[i].LowerIncluded || bPart.UpperIncluded)) {
-			//		var aPart = parts[i];
+					// If there's some of A left on the upper side, drop the lower side.
+					if (bPart.Upper.ComesBefore(parts[i].Upper, parts[i].UpperIncluded && !bPart.UpperIncluded))
+						parts[i] = new Part(bPart.Upper, !bPart.UpperIncluded, parts[i].Upper, parts[i].UpperIncluded);
 
-			//		// If there's some of A left on the lower side, subtract and insert it.
-			//		if (aPart.Lower.ComesBefore(bPart.Lower, aPart.LowerIncluded && !bPart.LowerIncluded))
-			//			parts[i] = new Part(aPart.Lower, aPart.LowerIncluded, bPart.Lower, !bPart.LowerIncluded);
-
-			//		// If there's some of A left on the upper side, drop the lower side.
-			//		if (bPart.Upper.ComesBefore(aPart.Upper, aPart.UpperIncluded && !bPart.UpperIncluded))
-			//			parts.Insert(++i, new Part(bPart.Upper, !bPart.UpperIncluded, aPart.Upper, aPart.UpperIncluded));
-			//	}
-			//}
-
-			/*
-
-			foreach bPart {
-				while !overlap
-					skip
-
-				while overlap
-					if left side remains
-						replace current by left
-					if right side remains
-						swap
+					// Otherwise, remove what's left ofthe the current aPart; the next aPart moves in as current automatically.
+					else parts.RemoveAt(i);
+				}
 			}
-
-			*/
-
-			//// For each new part, test the new part for overlap with existing parts.
-			//var j = 0;
-			//for (var i = 0; i < a.Parts.Length; ++i) {
-			//	var aPart = a.Parts[i];
-
-			//	// Move forward while the subtracted part comes before the base part: we're not in position yet.
-			//	while (j < b.Parts.Length && b.Parts[j].Upper.ComesBefore(aPart.Lower, !(b.Parts[j].UpperIncluded && aPart.LowerIncluded)))
-			//		++j;
-
-			//	// Insert A if this was the last B-part, or if the next B-part doesn't overlap.
-			//	if (b.Parts.Length <= j || aPart.Upper.ComesBefore(b.Parts[j].Lower, !(aPart.UpperIncluded && b.Parts[j].LowerIncluded)))
-			//		parts.Add(aPart);
-
-			//	// Subtract and insert the overlaping parts.
-			//	else do {
-			//		// If there's some of A left on the lower side, subtract and insert it.
-			//		if (aPart.Lower.ComesBefore(b.Parts[j].Lower, aPart.LowerIncluded && ! b.Parts[j].LowerIncluded))
-			//			parts.Add(new Part(aPart.Lower, aPart.LowerIncluded, b.Parts[j].Lower, !b.Parts[j].LowerIncluded));
-
-			//		// If there's some of A left on the upper side, drop the lower side.
-			//		if (b.Parts[j].Upper.ComesBefore(aPart.Upper, aPart.UpperIncluded && !b.Parts[j].UpperIncluded)) {
-			//			aPart = new Part(b.Parts[j].Upper, !b.Parts[j].UpperIncluded, aPart.Upper, aPart.UpperIncluded);
-			//			++j;
-
-			//			// Insert the remaining of A if this was the last B-part, or if the next B-part doesn't overlap.
-			//			if (b.Parts.Length <= j || aPart.Upper.ComesBefore(b.Parts[j].Lower, !(aPart.UpperIncluded && b.Parts[j].LowerIncluded))) {
-			//				parts.Add(aPart);
-			//				break;
-			//			}
-			//		}
-
-			//		else ++j;
-			//	} while (j < b.Parts.Length && b.Parts[j].Lower.ComesBefore(aPart.Upper, b.Parts[j].LowerIncluded && aPart.UpperIncluded));
-			//}
 
 			return new Domain<T>(parts.ToImmutable());
 		}
 
 		/// <summary> Symmetric difference, a.k.a. Disjunctive union. </summary>
 		public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => default;
-
-		// TODO Difference graal
 
 		// TODO use this for DisjunctiveUnion: public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => (a | b) - (a & b);
 		// TODO benchmark the DisjunctiveUnion
@@ -1765,16 +1731,15 @@ namespace Nap {
 		//public static Domain<T> operator +(T a, Domain<T> b) => b + a;
 		//public static Domain<T> operator +(Domain<T> a, T b) => default;
 
-		//public static Domain<T> operator -(T a, Domain<T> b) => b + a;
 		//public static Domain<T> operator -(Domain<T> a, T b) => default;
 
 		public static bool operator ==(Domain<T> a, Domain<T> b) => a.Equals(b);
 		public static bool operator !=(Domain<T> a, Domain<T> b) => !a.Equals(b);
 
 		public bool Equals(Domain<T> other) =>
-			  (Parts == null || Parts.Length == 0) ? other.Parts == null || other.Parts.Length == 0
-			: (other.Parts == null || other.Parts.Length == 0) ? false
-			: Parts.SequenceEqual(other.Parts);
+			Parts == null || Parts.Length == 0
+				? other.Parts == null || other.Parts.Length == 0
+				: other.Parts != null && other.Parts.Length != 0 && Parts.SequenceEqual(other.Parts);
 
 		public override bool Equals(object? obj) => obj is Domain<T> other && Equals(other);
 		public override int GetHashCode() =>
