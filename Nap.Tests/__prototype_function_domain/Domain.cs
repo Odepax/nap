@@ -1211,8 +1211,8 @@ namespace Nap {
 
 			var Df = A ^ B;
 
-			if (b ^ c) AssertDomain(new Domain<int>(10, true, 30, true), Df);
-			else AssertDomain(new Domain<int>(10, true, 20, false) | new Domain<int>(20, false, 30, true), Df);
+			if (b ^ c) AssertDomain(new Domain<int>(10, a, 30, d), Df);
+			else AssertDomain(new Domain<int>(10, a, 20, false) | new Domain<int>(20, false, 30, d), Df);
 
 			AssertContains(Df,
 				(5, false),
@@ -1323,8 +1323,8 @@ namespace Nap {
 			var B = new Domain<int>(2, true, 3, true);
 			var C = new Domain<int>(3, true, 4, true);
 
-			AssertDomain(new Domain<int>(1, true, 1, true) | new Domain<int>(3, true, 3, true), A ^ B);
-			AssertDomain(new Domain<int>(1, true, 1, true) | new Domain<int>(4, true, 4, true), A ^ B ^ C);
+			AssertDomain(new Domain<int>(1, true, 2, false) | new Domain<int>(2, false, 3, true), A ^ B);
+			AssertDomain(new Domain<int>(1, true, 2, false) | new Domain<int>(2, false, 3, false) | new Domain<int>(3, false, 4, true), A ^ B ^ C);
 			AssertCommutativity(DisjunctiveUnion, A, B);
 			AssertAssociativity(DisjunctiveUnion, A, B, C);
 
@@ -1364,7 +1364,15 @@ namespace Nap {
 			//                                      A            A    A    A                           A
 
 			AssertDomain(A | B, A ^ B);
-			AssertDomain(new Domain<int>(5, true, 6, true), A ^ C);
+
+			AssertDomain((
+				  new Domain<int>(4, true, 5, false)
+				| new Domain<int>(6, false, 7, true)
+				| new Domain<int>(9, true, 11, false)
+				| new Domain<int>(11, false, 12, false)
+				| new Domain<int>(12, false, 13, true)
+				| new Domain<int>(18, true, 21, true)
+			), A ^ C);
 
 			AssertDomain((
 				  new Domain<int>(5, true, 7, true)
@@ -1712,7 +1720,7 @@ namespace Nap {
 					if (bPart.Upper.ComesBefore(parts[i].Upper, parts[i].UpperIncluded && !bPart.UpperIncluded))
 						parts[i] = new Part(bPart.Upper, !bPart.UpperIncluded, parts[i].Upper, parts[i].UpperIncluded);
 
-					// Otherwise, remove what's left ofthe the current aPart; the next aPart moves in as current automatically.
+					// Otherwise, remove what's left of the the current aPart; the next aPart moves in as current automatically.
 					else parts.RemoveAt(i);
 				}
 			}
@@ -1721,9 +1729,8 @@ namespace Nap {
 		}
 
 		/// <summary> Symmetric difference, a.k.a. Disjunctive union. </summary>
-		public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => default;
+		public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => (a | b) - (a & b);
 
-		// TODO use this for DisjunctiveUnion: public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => (a | b) - (a & b);
 		// TODO benchmark the DisjunctiveUnion
 		// TODO DisjunctiveUnion graal
 		// TODO benchmark the DisjunctiveUnion again
