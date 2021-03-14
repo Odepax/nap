@@ -1626,6 +1626,97 @@ namespace Nap {
 			AssertDomain(A | new Domain<int>(K), A + K);
 			AssertDomain(A | new Domain<int>(L), A + L);
 		}
+
+		// Subtraction.
+		// ----
+
+		[Test]
+		public static void Subtraction_with_default() {
+			var A = default(Domain<int>);
+			var x = 42;
+
+			AssertDomain(default, A - x);
+		}
+
+		[Test]
+		public static void Subtraction_all_in_one() {
+			var A = (
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			);
+
+			var B = 1;
+			var C = 2;
+			var D = 3;
+			var E = 4;
+			var F = 5;
+			var G = 6;
+			var H = 7;
+			var I = 8;
+			var J = 9;
+			var K = 10;
+			var L = 11;
+
+			// B C D E F G H  I J  K  L
+			// 1 2 3 4 5 6 7  8 9 10 11
+			//   [_A_]   ]_A_[]_A__[
+
+			AssertDomain(A, A - B);
+
+			AssertDomain((
+				  new Domain<int>(2, false, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			), A - C);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 3, false)
+				| new Domain<int>(3, false, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			), A - D);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, false)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			), A - E);
+
+			AssertDomain(A, A - F);
+			AssertDomain(A, A - G);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 7, false)
+				| new Domain<int>(7, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			), A - H);
+			
+			AssertDomain(A, A - I);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 9, false)
+				| new Domain<int>(9, false, 10, false)
+			), A - J);
+
+			AssertDomain(A, A - K);
+			AssertDomain(A, A - L);
+
+			AssertDomain(A - new Domain<int>(B), A - B);
+			AssertDomain(A - new Domain<int>(C), A - C);
+			AssertDomain(A - new Domain<int>(D), A - D);
+			AssertDomain(A - new Domain<int>(E), A - E);
+			AssertDomain(A - new Domain<int>(F), A - F);
+			AssertDomain(A - new Domain<int>(G), A - G);
+			AssertDomain(A - new Domain<int>(H), A - H);
+			AssertDomain(A - new Domain<int>(I), A - I);
+			AssertDomain(A - new Domain<int>(J), A - J);
+			AssertDomain(A - new Domain<int>(K), A - K);
+			AssertDomain(A - new Domain<int>(L), A - L);
+		}
 	}
 
 	public readonly struct Domain<T> : IEquatable<Domain<T>> where T : IComparable<T> {
@@ -1841,7 +1932,6 @@ namespace Nap {
 
 		// TODO DisjunctiveUnion graal
 		// TODO benchmark a ^ b vs (a | b) - (a & b)
-		// TODO - @below (with the tests)
 		// TODO toString
 
 		/// <summary> Addition's commutative alias. </summary>
@@ -1892,8 +1982,45 @@ namespace Nap {
 			else return new Domain<T>(a.Parts.Insert(i, new Part(b, true, b, true)));
 		}
 
-		///// <summary> Subtraction. </summary>
-		//public static Domain<T> operator -(Domain<T> a, T b) => default;
+		/// <summary> Subtraction. </summary>
+		public static Domain<T> operator -(Domain<T> a, T b) {
+			if (a.Parts == null || a.Parts.Length == 0) return default;
+
+			var i = 0;
+
+			// Move forward while the existing part comes before the new part: we're not in position yet.
+			while (i < a.Parts.Length && a.Parts[i].Upper.ComesBefore(b, false))
+				++i;
+
+			// If we have an overlap, subtract the new value from the part.
+			if (i < a.Parts.Length && a.Parts[i].Lower.ComesBefore(b, a.Parts[i].LowerIncluded)) {
+				var (lower, lowerIncluded, upper, upperIncluded) = a.Parts[i];
+
+				// Edge case when the new value is exactly the lower bound and we have to tweak the inclusion.
+				if (lower.CompareTo(b) == 0)
+					return new Domain<T>(a.Parts.SetItem(i, new Part(lower, false, upper, upperIncluded)));
+
+				// Edge case when the new value is exactly the upper bound and we have to tweak the inclusion.
+				else if (upper.CompareTo(b) == 0) {
+					if (upperIncluded)
+						return new Domain<T>(a.Parts.SetItem(i, new Part(lower, lowerIncluded, upper, false)));
+
+					else return a;
+				}
+
+				// When the new value falls in the middle of a part, we have to split it.
+				else {
+					var parts = a.Parts.ToBuilder();
+
+					parts[i] = new Part(lower, lowerIncluded, b, false);
+					parts.Insert(i + 1, new Part(b, false, upper, upperIncluded));
+
+					return new Domain<T>(parts.ToImmutable());
+				}
+			}
+
+			else return a;
+		}
 
 		public static bool operator ==(Domain<T> a, Domain<T> b) => a.Equals(b);
 		public static bool operator !=(Domain<T> a, Domain<T> b) => !a.Equals(b);
