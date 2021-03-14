@@ -338,6 +338,7 @@ namespace Nap {
 			//      70 | A B  | A B  | A B  | A?B  |   B  |   B  |   B  |   B? | /    |
 
 			// TODO: The abominable test.
+			//       It feels like setting up this test is reproducing the prod algorithm...
 			/*
 			var mergesWithA = (
 				   (C_low <= 20 && 25 <= C_up)
@@ -393,6 +394,19 @@ namespace Nap {
 			// therefore, they are not merged...
 			AssertNotDomain(new Domain<int>(1, true, 4, true), A | B | C);
 			AssertAssociativity(Union, A, B, C);
+		}
+
+		[Test]
+		public static void Union_to_plug_holes() {
+			var A = new Domain<int>(1, true, 3, false) | new Domain<int>(3, false, 12, false);
+			var B = new Domain<int>(3);
+
+			AssertDomain(new Domain<int>(1, true, 12, false), A | B);
+
+			A |= new Domain<int>(12, false, 15, true);
+			var C = new Domain<int>(12);
+
+			AssertDomain(new Domain<int>(1, true, 15, true), A | B | C);
 		}
 
 		[Test]
@@ -1518,6 +1532,100 @@ namespace Nap {
 
 			AssertCommutativity(DisjunctiveUnion, A, B, testValues);
 		}
+
+		// Addition.
+		// ----
+
+		[Test]
+		public static void Addition_with_default() {
+			var A = default(Domain<int>);
+			var x = 42;
+
+			AssertDomain(new Domain<int>(x, true, x, true), A + x);
+		}
+
+		[Test]
+		public static void Addition_all_in_one() {
+			var A = (
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			);
+
+			var B = 1;
+			var C = 2;
+			var D = 3;
+			var E = 4;
+			var F = 5;
+			var G = 6;
+			var H = 7;
+			var I = 8;
+			var J = 9;
+			var K = 10;
+			var L = 11;
+
+			// B C D E F G H  I J  K  L
+			// 1 2 3 4 5 6 7  8 9 10 11
+			//   [_A_]   ]_A_[]_A__[
+
+			AssertDomain((
+				  new Domain<int>(1, true, 1, true)
+				| new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			), A + B);
+
+			AssertDomain(A, A + C);
+			AssertDomain(A, A + D);
+			AssertDomain(A, A + E);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(5, true, 5, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			), A + F);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, true, 8, false)
+				| new Domain<int>(8, false, 10, false)
+			), A + G);
+
+			AssertDomain(A, A + H);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 10, false)
+			), A + I);
+
+			AssertDomain(A, A + J);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, true)
+			), A + K);
+
+			AssertDomain((
+				  new Domain<int>(2, true, 4, true)
+				| new Domain<int>(6, false, 8, false)
+				| new Domain<int>(8, false, 10, false)
+				| new Domain<int>(11, true, 11, true)
+			), A + L);
+
+			AssertDomain(A | new Domain<int>(B), A + B);
+			AssertDomain(A | new Domain<int>(C), A + C);
+			AssertDomain(A | new Domain<int>(D), A + D);
+			AssertDomain(A | new Domain<int>(E), A + E);
+			AssertDomain(A | new Domain<int>(F), A + F);
+			AssertDomain(A | new Domain<int>(G), A + G);
+			AssertDomain(A | new Domain<int>(H), A + H);
+			AssertDomain(A | new Domain<int>(I), A + I);
+			AssertDomain(A | new Domain<int>(J), A + J);
+			AssertDomain(A | new Domain<int>(K), A + K);
+			AssertDomain(A | new Domain<int>(L), A + L);
+		}
 	}
 
 	public readonly struct Domain<T> : IEquatable<Domain<T>> where T : IComparable<T> {
@@ -1708,7 +1816,7 @@ namespace Nap {
 				while (i < parts.Count && parts[i].Upper.ComesBefore(bPart.Lower, !(parts[i].UpperIncluded && bPart.LowerIncluded)))
 					++i;
 
-				// Subtract and insert the overlaping parts.
+				// Subtract and insert the overlapping parts.
 				while (i < parts.Count && parts[i].Lower.ComesBefore(bPart.Upper, parts[i].LowerIncluded && bPart.UpperIncluded)) {
 					// If there's some of A left on the lower side, subtract and insert it.
 					if (parts[i].Lower.ComesBefore(bPart.Lower, parts[i].LowerIncluded && !bPart.LowerIncluded)) {
@@ -1731,13 +1839,60 @@ namespace Nap {
 		/// <summary> Symmetric difference, a.k.a. Disjunctive union. </summary>
 		public static Domain<T> operator ^(Domain<T> a, Domain<T> b) => (a | b) - (a & b);
 
-		// TODO benchmark the DisjunctiveUnion
 		// TODO DisjunctiveUnion graal
-		// TODO benchmark the DisjunctiveUnion again
+		// TODO benchmark a ^ b vs (a | b) - (a & b)
+		// TODO - @below (with the tests)
+		// TODO toString
 
-		//public static Domain<T> operator +(T a, Domain<T> b) => b + a;
-		//public static Domain<T> operator +(Domain<T> a, T b) => default;
+		/// <summary> Addition's commutative alias. </summary>
+		public static Domain<T> operator +(T a, Domain<T> b) => b + a;
 
+		/// <summary> Addition. </summary>
+		public static Domain<T> operator +(Domain<T> a, T b) {
+			if (a.Parts == null || a.Parts.Length == 0) return new Domain<T>(b);
+
+			var i = 0;
+
+			// Move forward while the existing part comes before the new part: we're not in position yet.
+			while (i < a.Parts.Length && a.Parts[i].Upper.ComesBefore(b, false))
+				++i;
+
+			// If we reached the end of the parts list, just append the value at the end.
+			if (a.Parts.Length <= i)
+				return new Domain<T>(a.Parts.Add(new Part(b, true, b, true)));
+
+			// If we got an overlapping part, merge the new value in.
+			else if (a.Parts[i].Lower.ComesBefore(b, true)) {
+				var (lower, lowerIncluded, upper, upperIncluded) = a.Parts[i];
+
+				// Edge case when the new value is exactly the lower bound and we have to tweak the inclusion.
+				if (!lowerIncluded && lower.CompareTo(b) == 0)
+					return new Domain<T>(a.Parts.SetItem(i, new Part(lower, true, upper, upperIncluded)));
+
+				// Edge case when the new value is exactly the upper bound and we have to tweak the inclusion.
+				else if (!upperIncluded && upper.CompareTo(b) == 0) {
+					// Of course, we have to check that the next part (if any) doesn't merge in as well...
+					if (i + 1 < a.Parts.Length && a.Parts[i + 1].Lower.CompareTo(b) == 0) {
+						var parts = a.Parts.ToBuilder();
+
+						parts[i] = new Part(lower, lowerIncluded, a.Parts[i + 1].Upper, a.Parts[i + 1].UpperIncluded);
+						parts.RemoveAt(i + 1);
+
+						return new Domain<T>(parts.ToImmutable());
+					}
+
+					else return new Domain<T>(a.Parts.SetItem(i, new Part(lower, lowerIncluded, upper, true)));
+				}
+
+				// When the new value falls in the middle of a part, it's equivalent to the original domain.
+				else return a;
+			}
+
+			// Otherwise, just insert the value at the right position.
+			else return new Domain<T>(a.Parts.Insert(i, new Part(b, true, b, true)));
+		}
+
+		///// <summary> Subtraction. </summary>
 		//public static Domain<T> operator -(Domain<T> a, T b) => default;
 
 		public static bool operator ==(Domain<T> a, Domain<T> b) => a.Equals(b);
