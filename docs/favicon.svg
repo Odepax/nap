@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" version="1.1" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<linearGradient id="LG" x1="15.32" x2="19" y1="9.08" y2="25" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#32bfea"/>
+			<stop offset=".5" stop-color="#8149ca"/>
+			<stop offset="1" stop-color="#ef175e"/>
+		</linearGradient>
+	</defs>
+	<circle cx="16" cy="16" r="16" fill="#1f1c21"/>
+	<path d="m6.83 18.03 10.546-10.546v13.032l4.3957-4.3957c0.78105-0.78105 2.0474-0.78105 2.8284 0 0.78105 0.78105 0.78105 2.0474-6e-9 2.8284l-4.3957 4.3957c-1.144 1.144-2.8645 1.4862-4.3592 0.86709-1.4947-0.61912-2.4693-2.0777-2.4693-3.6955l2.159e-6 -3.3747-3.0135 3.0135" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"/>
+	<path d="m6.83 18.03 10.546-10.546v13.032l4.3957-4.3957c0.78105-0.78105 2.0474-0.78105 2.8284 0 0.78105 0.78105 0.78105 2.0474-6e-9 2.8284l-4.3957 4.3957c-1.144 1.144-2.8645 1.4862-4.3592 0.86709-1.4947-0.61912-2.4693-2.0777-2.4693-3.6955l2.159e-6 -3.3747-3.0135 3.0135" stroke="url(#LG)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+</svg>
