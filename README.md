@@ -4,4 +4,4 @@ Nap
 Installation
 ----
 
-Install the [Nap](https://www.nuget.org/packages/Nap) NuGet package.
+Install the [Odepax.Nap](https://www.nuget.org/packages/Odepax.Nap) NuGet package.
